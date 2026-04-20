@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Concerns\GeneratesUniqueTeamSlugs;
+use App\Enums\SchoolType;
 use App\Enums\TeamRole;
 use Database\Factories\TeamFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -12,7 +13,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['name', 'slug', 'is_personal'])]
+#[Fillable([
+    'name',
+    'slug',
+    'is_personal',
+    'npsn',
+    'school_type',
+    'address',
+    'city',
+    'province',
+    'postal_code',
+    'phone',
+    'email',
+    'logo_path',
+    'accreditation',
+    'principal_name',
+    'founded_year',
+    'vision',
+    'mission',
+    'description',
+    'website_theme',
+    'custom_domain',
+])]
 class Team extends Model
 {
     /** @use HasFactory<TeamFactory> */
@@ -82,6 +104,36 @@ class Team extends Model
     }
 
     /**
+     * Get all pages for this team.
+     *
+     * @return HasMany<Page, $this>
+     */
+    public function pages(): HasMany
+    {
+        return $this->hasMany(Page::class);
+    }
+
+    /**
+     * Get all posts for this team.
+     *
+     * @return HasMany<Post, $this>
+     */
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    /**
+     * Get all galleries for this team.
+     *
+     * @return HasMany<Gallery, $this>
+     */
+    public function galleries(): HasMany
+    {
+        return $this->hasMany(Gallery::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -90,6 +142,7 @@ class Team extends Model
     {
         return [
             'is_personal' => 'boolean',
+            'school_type' => SchoolType::class,
         ];
     }
 

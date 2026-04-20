@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\SchoolType;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -44,6 +45,32 @@ class TeamFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'deleted_at' => now(),
+        ]);
+    }
+
+    /**
+     * Indicate that the team has school profile fields populated.
+     */
+    public function school(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'npsn' => fake()->numerify('########'),
+            'school_type' => fake()->randomElement(SchoolType::cases())->value,
+            'address' => fake()->streetAddress(),
+            'city' => fake()->city(),
+            'province' => fake()->state(),
+            'postal_code' => fake()->postcode(),
+            'phone' => fake()->phoneNumber(),
+            'email' => fake()->companyEmail(),
+            'logo_path' => 'logos/'.fake()->uuid().'.png',
+            'accreditation' => fake()->randomElement(['A', 'B', 'C']),
+            'principal_name' => fake()->name(),
+            'founded_year' => fake()->numberBetween(1945, 2020),
+            'vision' => fake()->sentence(),
+            'mission' => fake()->paragraph(),
+            'description' => fake()->paragraph(),
+            'website_theme' => fake()->randomElement(['default', 'modern', 'classic']),
+            'custom_domain' => null,
         ]);
     }
 }
