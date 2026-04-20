@@ -65,5 +65,8 @@ test('factory school state creates team with school fields populated', function 
         ->and($team->vision)->not->toBeNull()
         ->and($team->mission)->not->toBeNull()
         ->and($team->description)->not->toBeNull()
-        ->and($team->website_theme)->not->toBeNull();
+        ->and($team->website_theme)->not->toBeNull()
+        ->and($team->founded_year)->toBeInt()
+        ->and($team->school_type)->toBeInstanceOf(SchoolType::class)
+        ->and($team->npsn)->toHaveLength(8);
 });

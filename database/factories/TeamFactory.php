@@ -60,7 +60,7 @@ class TeamFactory extends Factory
             'city' => fake()->city(),
             'province' => fake()->state(),
             'postal_code' => fake()->postcode(),
-            'phone' => fake()->phoneNumber(),
+            'phone' => fake()->numerify('0##-########'),
             'email' => fake()->companyEmail(),
             'logo_path' => 'logos/'.fake()->uuid().'.png',
             'accreditation' => fake()->randomElement(['A', 'B', 'C']),

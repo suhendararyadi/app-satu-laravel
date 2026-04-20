@@ -27,7 +27,7 @@ return new class extends Migration
             $table->text('vision')->nullable()->after('founded_year');
             $table->text('mission')->nullable()->after('vision');
             $table->text('description')->nullable()->after('mission');
-            $table->string('website_theme')->nullable()->default('default')->after('description');
+            $table->string('website_theme')->default('default')->after('description');
             $table->string('custom_domain')->nullable()->unique()->after('website_theme');
         });
     }
@@ -38,6 +38,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('teams', function (Blueprint $table) {
+            $table->dropUnique(['npsn']);
+            $table->dropUnique(['custom_domain']);
             $table->dropColumn([
                 'npsn',
                 'school_type',
