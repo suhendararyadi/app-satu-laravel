@@ -33,7 +33,10 @@ export default function CmsPagesIndex({ pages }: Props) {
             }),
             {
                 preserveScroll: true,
-                onFinish: () => setConfirmOpen(false),
+                onFinish: () => {
+                    setConfirmOpen(false);
+                    setPendingPage(null);
+                },
             },
         );
     }
@@ -148,7 +151,10 @@ export default function CmsPagesIndex({ pages }: Props) {
 
             <ConfirmDeleteDialog
                 open={confirmOpen}
-                onOpenChange={setConfirmOpen}
+                onOpenChange={(open) => {
+                    setConfirmOpen(open);
+                    if (!open) setPendingPage(null);
+                }}
                 title={`Hapus halaman "${pendingPage?.title}"?`}
                 onConfirm={executeDelete}
             />
