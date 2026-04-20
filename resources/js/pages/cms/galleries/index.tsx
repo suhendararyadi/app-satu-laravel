@@ -1,5 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import * as GalleryController from '@/actions/App/Http/Controllers/CMS/GalleryController';
+import ConfirmDeleteDialog from '@/components/confirm-delete-dialog';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,18 +15,28 @@ export default function CmsGalleriesIndex({ galleries }: Props) {
     const { currentTeam } = usePage().props;
     const teamSlug = currentTeam?.slug ?? '';
 
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [pendingGallery, setPendingGallery] = useState<Gallery | null>(null);
+
     function handleDelete(gallery: Gallery) {
-        if (!window.confirm(`Hapus galeri "${gallery.title}"?`)) {
-            return;
-        }
+        setPendingGallery(gallery);
+        setConfirmOpen(true);
+    }
+
+    function executeDelete() {
+        if (!pendingGallery) return;
 
         router.delete(
             GalleryController.destroy.url({
                 current_team: teamSlug,
-                gallery: gallery.id,
+                gallery: pendingGallery.id,
             }),
             {
                 preserveScroll: true,
+                onFinish: () => {
+                    setConfirmOpen(false);
+                    setPendingGallery(null);
+                },
             },
         );
     }
@@ -132,6 +144,16 @@ export default function CmsGalleriesIndex({ galleries }: Props) {
                     </div>
                 )}
             </div>
+
+            <ConfirmDeleteDialog
+                open={confirmOpen}
+                onOpenChange={(open) => {
+                    setConfirmOpen(open);
+                    if (!open) setPendingGallery(null);
+                }}
+                title={`Hapus galeri "${pendingGallery?.title}"?`}
+                onConfirm={executeDelete}
+            />
         </>
     );
 }
