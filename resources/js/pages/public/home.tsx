@@ -20,9 +20,13 @@ export default function PublicHome({ school, recentPosts, pages }: Props) {
                             className="mx-auto mb-6 h-24 w-24 rounded-full object-cover shadow-md"
                         />
                     )}
-                    <h1 className="text-4xl font-bold text-gray-900">{school.name}</h1>
+                    <h1 className="text-4xl font-bold text-gray-900">
+                        {school.name}
+                    </h1>
                     {school.description && (
-                        <p className="mt-4 text-lg text-gray-600">{school.description}</p>
+                        <p className="mt-4 text-lg text-gray-600">
+                            {school.description}
+                        </p>
                     )}
                     {school.city && school.province && (
                         <p className="mt-2 text-sm text-gray-500">
@@ -37,7 +41,9 @@ export default function PublicHome({ school, recentPosts, pages }: Props) {
                 <section className="px-6 py-16">
                     <div className="mx-auto max-w-6xl">
                         <div className="mb-8 flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-gray-900">Berita Terbaru</h2>
+                            <h2 className="text-2xl font-bold text-gray-900">
+                                Berita Terbaru
+                            </h2>
                             <Link
                                 href={`/schools/${school.slug}/news`}
                                 className="text-sm text-blue-600 hover:underline"
@@ -68,11 +74,15 @@ export default function PublicHome({ school, recentPosts, pages }: Props) {
                                             {post.title}
                                         </h3>
                                         {post.excerpt && (
-                                            <p className="mt-1 line-clamp-2 text-sm text-gray-500">{post.excerpt}</p>
+                                            <p className="mt-1 line-clamp-2 text-sm text-gray-500">
+                                                {post.excerpt}
+                                            </p>
                                         )}
                                         {post.published_at && (
                                             <p className="mt-2 text-xs text-gray-400">
-                                                {new Date(post.published_at).toLocaleDateString('id-ID', {
+                                                {new Date(
+                                                    post.published_at,
+                                                ).toLocaleDateString('id-ID', {
                                                     year: 'numeric',
                                                     month: 'long',
                                                     day: 'numeric',
@@ -91,15 +101,19 @@ export default function PublicHome({ school, recentPosts, pages }: Props) {
             {pages.length > 0 && (
                 <section className="bg-gray-50 px-6 py-16">
                     <div className="mx-auto max-w-6xl">
-                        <h2 className="mb-8 text-2xl font-bold text-gray-900">Halaman</h2>
+                        <h2 className="mb-8 text-2xl font-bold text-gray-900">
+                            Halaman
+                        </h2>
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {pages.map((page) => (
                                 <Link
                                     key={page.id}
                                     href={`/schools/${school.slug}/pages/${page.slug}`}
-                                    className="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md hover:text-blue-600"
+                                    className="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition hover:text-blue-600 hover:shadow-md"
                                 >
-                                    <span className="font-medium text-gray-900 hover:text-blue-600">{page.title}</span>
+                                    <span className="font-medium text-gray-900 hover:text-blue-600">
+                                        {page.title}
+                                    </span>
                                 </Link>
                             ))}
                         </div>

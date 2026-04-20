@@ -10,7 +10,9 @@ export default function PublicGalleryIndex({ school, galleries }: Props) {
     return (
         <div className="px-6 py-16">
             <div className="mx-auto max-w-6xl">
-                <h1 className="mb-8 text-3xl font-bold text-gray-900">Galeri</h1>
+                <h1 className="mb-8 text-3xl font-bold text-gray-900">
+                    Galeri
+                </h1>
 
                 {galleries.length === 0 ? (
                     <p className="text-gray-500">Belum ada galeri.</p>
@@ -41,7 +43,10 @@ export default function PublicGalleryIndex({ school, galleries }: Props) {
                                             {gallery.title}
                                         </h2>
                                         <p className="mt-1 text-sm text-gray-500">
-                                            {gallery.images_count ?? gallery.images?.length ?? 0} foto
+                                            {gallery.images_count ??
+                                                gallery.images?.length ??
+                                                0}{' '}
+                                            foto
                                         </p>
                                     </div>
                                 </Link>

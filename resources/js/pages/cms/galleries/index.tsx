@@ -18,9 +18,15 @@ export default function CmsGalleriesIndex({ galleries }: Props) {
             return;
         }
 
-        router.delete(GalleryController.destroy.url({ current_team: teamSlug, gallery: gallery.id }), {
-            preserveScroll: true,
-        });
+        router.delete(
+            GalleryController.destroy.url({
+                current_team: teamSlug,
+                gallery: gallery.id,
+            }),
+            {
+                preserveScroll: true,
+            },
+        );
     }
 
     return (
@@ -29,51 +35,82 @@ export default function CmsGalleriesIndex({ galleries }: Props) {
 
             <div className="px-4 py-6">
                 <div className="flex items-center justify-between">
-                    <Heading title="Galeri" description="Kelola galeri foto website sekolah" />
+                    <Heading
+                        title="Galeri"
+                        description="Kelola galeri foto website sekolah"
+                    />
                     <Button asChild>
-                        <Link href={GalleryController.create.url(teamSlug)}>Buat Galeri</Link>
+                        <Link href={GalleryController.create.url(teamSlug)}>
+                            Buat Galeri
+                        </Link>
                     </Button>
                 </div>
 
                 {galleries.length === 0 ? (
-                    <p className="text-muted-foreground mt-6 text-center">Belum ada galeri.</p>
+                    <p className="mt-6 text-center text-muted-foreground">
+                        Belum ada galeri.
+                    </p>
                 ) : (
                     <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {galleries.map((gallery) => {
                             const thumbnail = gallery.images?.[0];
-                            const imageCount = gallery.images_count ?? gallery.images?.length ?? 0;
+                            const imageCount =
+                                gallery.images_count ??
+                                gallery.images?.length ??
+                                0;
 
                             return (
-                                <div key={gallery.id} className="rounded-lg border overflow-hidden">
+                                <div
+                                    key={gallery.id}
+                                    className="overflow-hidden rounded-lg border"
+                                >
                                     {thumbnail ? (
                                         <img
-                                            src={'/storage/' + thumbnail.image_path}
+                                            src={
+                                                '/storage/' +
+                                                thumbnail.image_path
+                                            }
                                             alt={gallery.title}
                                             className="h-40 w-full object-cover"
                                         />
                                     ) : (
-                                        <div className="bg-muted h-40 w-full" />
+                                        <div className="h-40 w-full bg-muted" />
                                     )}
 
                                     <div className="p-4">
-                                        <h3 className="font-semibold">{gallery.title}</h3>
-                                        <p className="text-muted-foreground mt-1 text-sm">{imageCount} foto</p>
+                                        <h3 className="font-semibold">
+                                            {gallery.title}
+                                        </h3>
+                                        <p className="mt-1 text-sm text-muted-foreground">
+                                            {imageCount} foto
+                                        </p>
 
                                         <div className="mt-2">
                                             {gallery.is_published ? (
-                                                <Badge variant="default">Terbit</Badge>
+                                                <Badge variant="default">
+                                                    Terbit
+                                                </Badge>
                                             ) : (
-                                                <Badge variant="secondary">Draft</Badge>
+                                                <Badge variant="secondary">
+                                                    Draft
+                                                </Badge>
                                             )}
                                         </div>
 
                                         <div className="mt-4 flex items-center gap-2">
-                                            <Button asChild size="sm" variant="outline">
+                                            <Button
+                                                asChild
+                                                size="sm"
+                                                variant="outline"
+                                            >
                                                 <Link
-                                                    href={GalleryController.edit.url({
-                                                        current_team: teamSlug,
-                                                        gallery: gallery.id,
-                                                    })}
+                                                    href={GalleryController.edit.url(
+                                                        {
+                                                            current_team:
+                                                                teamSlug,
+                                                            gallery: gallery.id,
+                                                        },
+                                                    )}
                                                 >
                                                     Edit
                                                 </Link>
@@ -81,7 +118,9 @@ export default function CmsGalleriesIndex({ galleries }: Props) {
                                             <Button
                                                 size="sm"
                                                 variant="destructive"
-                                                onClick={() => handleDelete(gallery)}
+                                                onClick={() =>
+                                                    handleDelete(gallery)
+                                                }
                                             >
                                                 Hapus
                                             </Button>

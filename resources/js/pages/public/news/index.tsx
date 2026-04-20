@@ -19,7 +19,9 @@ export default function PublicNewsIndex({ school, posts }: Props) {
     return (
         <div className="px-6 py-16">
             <div className="mx-auto max-w-6xl">
-                <h1 className="mb-8 text-3xl font-bold text-gray-900">Berita</h1>
+                <h1 className="mb-8 text-3xl font-bold text-gray-900">
+                    Berita
+                </h1>
 
                 {posts.data.length === 0 ? (
                     <p className="text-gray-500">Belum ada berita.</p>
@@ -47,11 +49,15 @@ export default function PublicNewsIndex({ school, posts }: Props) {
                                         {post.title}
                                     </h2>
                                     {post.excerpt && (
-                                        <p className="mt-1 line-clamp-2 text-sm text-gray-500">{post.excerpt}</p>
+                                        <p className="mt-1 line-clamp-2 text-sm text-gray-500">
+                                            {post.excerpt}
+                                        </p>
                                     )}
                                     {post.published_at && (
                                         <p className="mt-2 text-xs text-gray-400">
-                                            {new Date(post.published_at).toLocaleDateString('id-ID', {
+                                            {new Date(
+                                                post.published_at,
+                                            ).toLocaleDateString('id-ID', {
                                                 year: 'numeric',
                                                 month: 'long',
                                                 day: 'numeric',
@@ -77,12 +83,16 @@ export default function PublicNewsIndex({ school, posts }: Props) {
                                                 ? 'border-blue-600 bg-blue-600 text-white'
                                                 : 'border-gray-300 text-gray-600 hover:border-blue-600 hover:text-blue-600'
                                         }`}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: link.label,
+                                        }}
                                     />
                                 ) : (
                                     <span
                                         className="rounded border border-gray-200 px-3 py-1 text-sm text-gray-400"
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                        dangerouslySetInnerHTML={{
+                                            __html: link.label,
+                                        }}
                                     />
                                 )}
                             </span>

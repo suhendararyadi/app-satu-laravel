@@ -18,9 +18,15 @@ export default function CmsPostsIndex({ posts }: Props) {
             return;
         }
 
-        router.delete(PostController.destroy.url({ current_team: teamSlug, post: post.id }), {
-            preserveScroll: true,
-        });
+        router.delete(
+            PostController.destroy.url({
+                current_team: teamSlug,
+                post: post.id,
+            }),
+            {
+                preserveScroll: true,
+            },
+        );
     }
 
     return (
@@ -29,9 +35,14 @@ export default function CmsPostsIndex({ posts }: Props) {
 
             <div className="px-4 py-6">
                 <div className="flex items-center justify-between">
-                    <Heading title="Artikel" description="Kelola artikel dan berita website sekolah" />
+                    <Heading
+                        title="Artikel"
+                        description="Kelola artikel dan berita website sekolah"
+                    />
                     <Button asChild>
-                        <Link href={PostController.create.url(teamSlug)}>Tulis Artikel</Link>
+                        <Link href={PostController.create.url(teamSlug)}>
+                            Tulis Artikel
+                        </Link>
                     </Button>
                 </div>
 
@@ -39,41 +50,71 @@ export default function CmsPostsIndex({ posts }: Props) {
                     <table className="w-full text-sm">
                         <thead className="bg-muted text-muted-foreground">
                             <tr>
-                                <th className="px-4 py-3 text-left font-medium">Judul</th>
-                                <th className="px-4 py-3 text-left font-medium">Penulis</th>
-                                <th className="px-4 py-3 text-left font-medium">Status</th>
-                                <th className="px-4 py-3 text-left font-medium">Tanggal Publish</th>
-                                <th className="px-4 py-3 text-left font-medium">Aksi</th>
+                                <th className="px-4 py-3 text-left font-medium">
+                                    Judul
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium">
+                                    Penulis
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium">
+                                    Status
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium">
+                                    Tanggal Publish
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium">
+                                    Aksi
+                                </th>
                             </tr>
                         </thead>
                         <tbody className="divide-y">
                             {posts.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="text-muted-foreground px-4 py-6 text-center">
+                                    <td
+                                        colSpan={5}
+                                        className="px-4 py-6 text-center text-muted-foreground"
+                                    >
                                         Belum ada artikel.
                                     </td>
                                 </tr>
                             )}
                             {posts.map((post) => (
                                 <tr key={post.id} className="hover:bg-muted/50">
-                                    <td className="px-4 py-3 font-medium">{post.title}</td>
-                                    <td className="text-muted-foreground px-4 py-3">{post.author.name}</td>
+                                    <td className="px-4 py-3 font-medium">
+                                        {post.title}
+                                    </td>
+                                    <td className="px-4 py-3 text-muted-foreground">
+                                        {post.author.name}
+                                    </td>
                                     <td className="px-4 py-3">
                                         {post.is_published ? (
-                                            <Badge variant="default">Terbit</Badge>
+                                            <Badge variant="default">
+                                                Terbit
+                                            </Badge>
                                         ) : (
-                                            <Badge variant="secondary">Draft</Badge>
+                                            <Badge variant="secondary">
+                                                Draft
+                                            </Badge>
                                         )}
                                     </td>
-                                    <td className="text-muted-foreground px-4 py-3">{post.published_at ?? '-'}</td>
+                                    <td className="px-4 py-3 text-muted-foreground">
+                                        {post.published_at ?? '-'}
+                                    </td>
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-2">
-                                            <Button asChild size="sm" variant="outline">
+                                            <Button
+                                                asChild
+                                                size="sm"
+                                                variant="outline"
+                                            >
                                                 <Link
-                                                    href={PostController.edit.url({
-                                                        current_team: teamSlug,
-                                                        post: post.id,
-                                                    })}
+                                                    href={PostController.edit.url(
+                                                        {
+                                                            current_team:
+                                                                teamSlug,
+                                                            post: post.id,
+                                                        },
+                                                    )}
                                                 >
                                                     Edit
                                                 </Link>
@@ -81,7 +122,9 @@ export default function CmsPostsIndex({ posts }: Props) {
                                             <Button
                                                 size="sm"
                                                 variant="destructive"
-                                                onClick={() => handleDelete(post)}
+                                                onClick={() =>
+                                                    handleDelete(post)
+                                                }
                                             >
                                                 Hapus
                                             </Button>

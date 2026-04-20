@@ -28,7 +28,12 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
-        form.put(GalleryController.update.url({ current_team: teamSlug, gallery: gallery.id }));
+        form.put(
+            GalleryController.update.url({
+                current_team: teamSlug,
+                gallery: gallery.id,
+            }),
+        );
     }
 
     function uploadImage(e: React.FormEvent) {
@@ -45,7 +50,10 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
         }
 
         router.post(
-            GalleryController.storeImage.url({ current_team: teamSlug, gallery: gallery.id }),
+            GalleryController.storeImage.url({
+                current_team: teamSlug,
+                gallery: gallery.id,
+            }),
             data,
             {
                 forceFormData: true,
@@ -78,7 +86,10 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
             <Head title="Edit Galeri" />
 
             <div className="px-4 py-6">
-                <Heading title="Edit Galeri" description="Ubah informasi galeri dan kelola foto" />
+                <Heading
+                    title="Edit Galeri"
+                    description="Ubah informasi galeri dan kelola foto"
+                />
 
                 <form onSubmit={submit} className="mt-6 max-w-2xl space-y-6">
                     <div className="grid gap-2">
@@ -86,7 +97,9 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
                         <Input
                             id="title"
                             value={form.data.title}
-                            onChange={(e) => form.setData('title', e.target.value)}
+                            onChange={(e) =>
+                                form.setData('title', e.target.value)
+                            }
                             placeholder="Judul galeri"
                             required
                         />
@@ -98,10 +111,12 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
                         <textarea
                             id="description"
                             value={form.data.description}
-                            onChange={(e) => form.setData('description', e.target.value)}
+                            onChange={(e) =>
+                                form.setData('description', e.target.value)
+                            }
                             placeholder="Deskripsi galeri (opsional)"
                             rows={3}
-                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                         />
                         <InputError message={form.errors.description} />
                     </div>
@@ -110,7 +125,9 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
                         <Checkbox
                             id="is_published"
                             checked={form.data.is_published}
-                            onCheckedChange={(checked) => form.setData('is_published', checked === true)}
+                            onCheckedChange={(checked) =>
+                                form.setData('is_published', checked === true)
+                            }
                         />
                         <Label htmlFor="is_published">Diterbitkan</Label>
                         <InputError message={form.errors.is_published} />
@@ -121,7 +138,9 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
                             Simpan
                         </Button>
                         <Button asChild variant="outline">
-                            <Link href={GalleryController.index.url(teamSlug)}>Batal</Link>
+                            <Link href={GalleryController.index.url(teamSlug)}>
+                                Batal
+                            </Link>
                         </Button>
                     </div>
                 </form>
@@ -130,11 +149,16 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
                     <h2 className="text-lg font-semibold">Foto Galeri</h2>
 
                     {gallery.images.length === 0 ? (
-                        <p className="text-muted-foreground mt-4 text-sm">Belum ada foto.</p>
+                        <p className="mt-4 text-sm text-muted-foreground">
+                            Belum ada foto.
+                        </p>
                     ) : (
                         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                             {gallery.images.map((image) => (
-                                <div key={image.id} className="rounded-md border overflow-hidden">
+                                <div
+                                    key={image.id}
+                                    className="overflow-hidden rounded-md border"
+                                >
                                     <img
                                         src={'/storage/' + image.image_path}
                                         alt={image.caption ?? ''}
@@ -142,7 +166,7 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
                                     />
                                     <div className="p-2">
                                         {image.caption && (
-                                            <p className="text-muted-foreground mb-2 truncate text-xs">
+                                            <p className="mb-2 truncate text-xs text-muted-foreground">
                                                 {image.caption}
                                             </p>
                                         )}
@@ -150,7 +174,9 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
                                             size="sm"
                                             variant="destructive"
                                             className="w-full"
-                                            onClick={() => deleteImage(image.id)}
+                                            onClick={() =>
+                                                deleteImage(image.id)
+                                            }
                                         >
                                             Hapus
                                         </Button>
@@ -169,13 +195,19 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
                                     id="image_file"
                                     type="file"
                                     accept="image/*"
-                                    onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-                                    className="border-input bg-background ring-offset-background focus-visible:ring-ring flex w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                    onChange={(e) =>
+                                        setImageFile(
+                                            e.target.files?.[0] ?? null,
+                                        )
+                                    }
+                                    className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                                 />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="caption">Keterangan (opsional)</Label>
+                                <Label htmlFor="caption">
+                                    Keterangan (opsional)
+                                </Label>
                                 <Input
                                     id="caption"
                                     value={caption}

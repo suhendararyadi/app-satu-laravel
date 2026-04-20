@@ -27,7 +27,10 @@ export default function CmsGalleriesCreate() {
             <Head title="Buat Galeri" />
 
             <div className="px-4 py-6">
-                <Heading title="Buat Galeri" description="Tambah galeri foto baru untuk website sekolah" />
+                <Heading
+                    title="Buat Galeri"
+                    description="Tambah galeri foto baru untuk website sekolah"
+                />
 
                 <form onSubmit={submit} className="mt-6 max-w-2xl space-y-6">
                     <div className="grid gap-2">
@@ -35,7 +38,9 @@ export default function CmsGalleriesCreate() {
                         <Input
                             id="title"
                             value={form.data.title}
-                            onChange={(e) => form.setData('title', e.target.value)}
+                            onChange={(e) =>
+                                form.setData('title', e.target.value)
+                            }
                             placeholder="Judul galeri"
                             required
                         />
@@ -47,10 +52,12 @@ export default function CmsGalleriesCreate() {
                         <textarea
                             id="description"
                             value={form.data.description}
-                            onChange={(e) => form.setData('description', e.target.value)}
+                            onChange={(e) =>
+                                form.setData('description', e.target.value)
+                            }
                             placeholder="Deskripsi galeri (opsional)"
                             rows={3}
-                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                         />
                         <InputError message={form.errors.description} />
                     </div>
@@ -59,7 +66,9 @@ export default function CmsGalleriesCreate() {
                         <Checkbox
                             id="is_published"
                             checked={form.data.is_published}
-                            onCheckedChange={(checked) => form.setData('is_published', checked === true)}
+                            onCheckedChange={(checked) =>
+                                form.setData('is_published', checked === true)
+                            }
                         />
                         <Label htmlFor="is_published">Diterbitkan</Label>
                         <InputError message={form.errors.is_published} />
@@ -70,7 +79,9 @@ export default function CmsGalleriesCreate() {
                             Simpan
                         </Button>
                         <Button asChild variant="outline">
-                            <Link href={GalleryController.index.url(teamSlug)}>Batal</Link>
+                            <Link href={GalleryController.index.url(teamSlug)}>
+                                Batal
+                            </Link>
                         </Button>
                     </div>
                 </form>

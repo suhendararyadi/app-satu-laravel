@@ -5,7 +5,13 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import type { School } from '@/types/school';
 
 interface Props {
@@ -64,8 +70,9 @@ export default function SchoolProfile({ team }: Props) {
                                     disabled
                                     className="bg-muted"
                                 />
-                                <p className="text-muted-foreground text-xs">
-                                    Nama sekolah dikelola melalui pengaturan tim.
+                                <p className="text-xs text-muted-foreground">
+                                    Nama sekolah dikelola melalui pengaturan
+                                    tim.
                                 </p>
                             </div>
 
@@ -75,7 +82,9 @@ export default function SchoolProfile({ team }: Props) {
                                 <Input
                                     id="npsn"
                                     value={form.data.npsn}
-                                    onChange={(e) => form.setData('npsn', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData('npsn', e.target.value)
+                                    }
                                     placeholder="Nomor Pokok Sekolah Nasional"
                                 />
                                 <InputError message={form.errors.npsn} />
@@ -83,10 +92,14 @@ export default function SchoolProfile({ team }: Props) {
 
                             {/* Jenis Sekolah */}
                             <div className="grid gap-2">
-                                <Label htmlFor="school_type">Jenis Sekolah</Label>
+                                <Label htmlFor="school_type">
+                                    Jenis Sekolah
+                                </Label>
                                 <Select
                                     value={form.data.school_type}
-                                    onValueChange={(value) => form.setData('school_type', value)}
+                                    onValueChange={(value) =>
+                                        form.setData('school_type', value)
+                                    }
                                 >
                                     <SelectTrigger id="school_type">
                                         <SelectValue placeholder="Pilih Jenis" />
@@ -102,39 +115,66 @@ export default function SchoolProfile({ team }: Props) {
 
                             {/* Akreditasi */}
                             <div className="grid gap-2">
-                                <Label htmlFor="accreditation">Akreditasi</Label>
+                                <Label htmlFor="accreditation">
+                                    Akreditasi
+                                </Label>
                                 <Input
                                     id="accreditation"
                                     value={form.data.accreditation}
-                                    onChange={(e) => form.setData('accreditation', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData(
+                                            'accreditation',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="Contoh: A, B, C"
                                 />
-                                <InputError message={form.errors.accreditation} />
+                                <InputError
+                                    message={form.errors.accreditation}
+                                />
                             </div>
 
                             {/* Tahun Berdiri */}
                             <div className="grid gap-2">
-                                <Label htmlFor="founded_year">Tahun Berdiri</Label>
+                                <Label htmlFor="founded_year">
+                                    Tahun Berdiri
+                                </Label>
                                 <Input
                                     id="founded_year"
                                     type="number"
                                     value={form.data.founded_year}
-                                    onChange={(e) => form.setData('founded_year', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData(
+                                            'founded_year',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="Contoh: 1985"
                                 />
-                                <InputError message={form.errors.founded_year} />
+                                <InputError
+                                    message={form.errors.founded_year}
+                                />
                             </div>
 
                             {/* Kepala Sekolah */}
                             <div className="grid gap-2">
-                                <Label htmlFor="principal_name">Kepala Sekolah</Label>
+                                <Label htmlFor="principal_name">
+                                    Kepala Sekolah
+                                </Label>
                                 <Input
                                     id="principal_name"
                                     value={form.data.principal_name}
-                                    onChange={(e) => form.setData('principal_name', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData(
+                                            'principal_name',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="Nama kepala sekolah"
                                 />
-                                <InputError message={form.errors.principal_name} />
+                                <InputError
+                                    message={form.errors.principal_name}
+                                />
                             </div>
                         </div>
 
@@ -146,10 +186,12 @@ export default function SchoolProfile({ team }: Props) {
                                 <textarea
                                     id="address"
                                     value={form.data.address}
-                                    onChange={(e) => form.setData('address', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData('address', e.target.value)
+                                    }
                                     placeholder="Alamat lengkap sekolah"
                                     rows={3}
-                                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                                 />
                                 <InputError message={form.errors.address} />
                             </div>
@@ -160,7 +202,9 @@ export default function SchoolProfile({ team }: Props) {
                                 <Input
                                     id="city"
                                     value={form.data.city}
-                                    onChange={(e) => form.setData('city', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData('city', e.target.value)
+                                    }
                                     placeholder="Nama kota"
                                 />
                                 <InputError message={form.errors.city} />
@@ -172,7 +216,9 @@ export default function SchoolProfile({ team }: Props) {
                                 <Input
                                     id="province"
                                     value={form.data.province}
-                                    onChange={(e) => form.setData('province', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData('province', e.target.value)
+                                    }
                                     placeholder="Nama provinsi"
                                 />
                                 <InputError message={form.errors.province} />
@@ -184,7 +230,12 @@ export default function SchoolProfile({ team }: Props) {
                                 <Input
                                     id="postal_code"
                                     value={form.data.postal_code}
-                                    onChange={(e) => form.setData('postal_code', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData(
+                                            'postal_code',
+                                            e.target.value,
+                                        )
+                                    }
                                     placeholder="Kode pos"
                                 />
                                 <InputError message={form.errors.postal_code} />
@@ -196,7 +247,9 @@ export default function SchoolProfile({ team }: Props) {
                                 <Input
                                     id="phone"
                                     value={form.data.phone}
-                                    onChange={(e) => form.setData('phone', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData('phone', e.target.value)
+                                    }
                                     placeholder="Nomor telepon sekolah"
                                 />
                                 <InputError message={form.errors.phone} />
@@ -209,7 +262,9 @@ export default function SchoolProfile({ team }: Props) {
                                     id="email"
                                     type="email"
                                     value={form.data.email}
-                                    onChange={(e) => form.setData('email', e.target.value)}
+                                    onChange={(e) =>
+                                        form.setData('email', e.target.value)
+                                    }
                                     placeholder="Email sekolah"
                                 />
                                 <InputError message={form.errors.email} />
@@ -225,10 +280,12 @@ export default function SchoolProfile({ team }: Props) {
                             <textarea
                                 id="vision"
                                 value={form.data.vision}
-                                onChange={(e) => form.setData('vision', e.target.value)}
+                                onChange={(e) =>
+                                    form.setData('vision', e.target.value)
+                                }
                                 placeholder="Visi sekolah"
                                 rows={3}
-                                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                             />
                             <InputError message={form.errors.vision} />
                         </div>
@@ -239,10 +296,12 @@ export default function SchoolProfile({ team }: Props) {
                             <textarea
                                 id="mission"
                                 value={form.data.mission}
-                                onChange={(e) => form.setData('mission', e.target.value)}
+                                onChange={(e) =>
+                                    form.setData('mission', e.target.value)
+                                }
                                 placeholder="Misi sekolah"
                                 rows={4}
-                                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                             />
                             <InputError message={form.errors.mission} />
                         </div>
@@ -253,10 +312,12 @@ export default function SchoolProfile({ team }: Props) {
                             <textarea
                                 id="description"
                                 value={form.data.description}
-                                onChange={(e) => form.setData('description', e.target.value)}
+                                onChange={(e) =>
+                                    form.setData('description', e.target.value)
+                                }
                                 placeholder="Deskripsi singkat tentang sekolah"
                                 rows={4}
-                                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                             />
                             <InputError message={form.errors.description} />
                         </div>
@@ -264,16 +325,22 @@ export default function SchoolProfile({ team }: Props) {
 
                     {/* Logo Upload */}
                     <div className="space-y-4">
-                        <Heading variant="small" title="Logo Sekolah" description="Upload logo sekolah dalam format gambar" />
+                        <Heading
+                            variant="small"
+                            title="Logo Sekolah"
+                            description="Upload logo sekolah dalam format gambar"
+                        />
 
                         {team.logo_path && (
                             <div className="flex items-center gap-4">
                                 <img
                                     src={'/storage/' + team.logo_path}
                                     alt="Logo sekolah"
-                                    className="h-20 w-20 rounded-md object-contain border"
+                                    className="h-20 w-20 rounded-md border object-contain"
                                 />
-                                <p className="text-muted-foreground text-sm">Logo saat ini</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Logo saat ini
+                                </p>
                             </div>
                         )}
 
@@ -283,7 +350,12 @@ export default function SchoolProfile({ team }: Props) {
                                 id="logo"
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => form.setData('logo', e.target.files?.[0] ?? null)}
+                                onChange={(e) =>
+                                    form.setData(
+                                        'logo',
+                                        e.target.files?.[0] ?? null,
+                                    )
+                                }
                             />
                             <InputError message={form.errors.logo} />
                         </div>
@@ -304,7 +376,9 @@ SchoolProfile.layout = (props: { team?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
             title: 'Profil Sekolah',
-            href: props.team ? SchoolProfileController.edit.url(props.team.slug) : '/',
+            href: props.team
+                ? SchoolProfileController.edit.url(props.team.slug)
+                : '/',
         },
     ],
 });

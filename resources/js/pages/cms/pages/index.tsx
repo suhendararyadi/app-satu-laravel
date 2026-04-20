@@ -18,9 +18,15 @@ export default function CmsPagesIndex({ pages }: Props) {
             return;
         }
 
-        router.delete(PageController.destroy.url({ current_team: teamSlug, page: page.id }), {
-            preserveScroll: true,
-        });
+        router.delete(
+            PageController.destroy.url({
+                current_team: teamSlug,
+                page: page.id,
+            }),
+            {
+                preserveScroll: true,
+            },
+        );
     }
 
     return (
@@ -29,9 +35,14 @@ export default function CmsPagesIndex({ pages }: Props) {
 
             <div className="px-4 py-6">
                 <div className="flex items-center justify-between">
-                    <Heading title="Halaman" description="Kelola halaman statis website sekolah" />
+                    <Heading
+                        title="Halaman"
+                        description="Kelola halaman statis website sekolah"
+                    />
                     <Button asChild>
-                        <Link href={PageController.create.url(teamSlug)}>Tambah Halaman</Link>
+                        <Link href={PageController.create.url(teamSlug)}>
+                            Tambah Halaman
+                        </Link>
                     </Button>
                 </div>
 
@@ -39,41 +50,71 @@ export default function CmsPagesIndex({ pages }: Props) {
                     <table className="w-full text-sm">
                         <thead className="bg-muted text-muted-foreground">
                             <tr>
-                                <th className="px-4 py-3 text-left font-medium">Judul</th>
-                                <th className="px-4 py-3 text-left font-medium">Slug</th>
-                                <th className="px-4 py-3 text-left font-medium">Status</th>
-                                <th className="px-4 py-3 text-left font-medium">Urutan</th>
-                                <th className="px-4 py-3 text-left font-medium">Aksi</th>
+                                <th className="px-4 py-3 text-left font-medium">
+                                    Judul
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium">
+                                    Slug
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium">
+                                    Status
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium">
+                                    Urutan
+                                </th>
+                                <th className="px-4 py-3 text-left font-medium">
+                                    Aksi
+                                </th>
                             </tr>
                         </thead>
                         <tbody className="divide-y">
                             {pages.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="text-muted-foreground px-4 py-6 text-center">
+                                    <td
+                                        colSpan={5}
+                                        className="px-4 py-6 text-center text-muted-foreground"
+                                    >
                                         Belum ada halaman.
                                     </td>
                                 </tr>
                             )}
                             {pages.map((page) => (
                                 <tr key={page.id} className="hover:bg-muted/50">
-                                    <td className="px-4 py-3 font-medium">{page.title}</td>
-                                    <td className="text-muted-foreground px-4 py-3">{page.slug}</td>
+                                    <td className="px-4 py-3 font-medium">
+                                        {page.title}
+                                    </td>
+                                    <td className="px-4 py-3 text-muted-foreground">
+                                        {page.slug}
+                                    </td>
                                     <td className="px-4 py-3">
                                         {page.is_published ? (
-                                            <Badge variant="default">Terbit</Badge>
+                                            <Badge variant="default">
+                                                Terbit
+                                            </Badge>
                                         ) : (
-                                            <Badge variant="secondary">Draft</Badge>
+                                            <Badge variant="secondary">
+                                                Draft
+                                            </Badge>
                                         )}
                                     </td>
-                                    <td className="text-muted-foreground px-4 py-3">{page.sort_order}</td>
+                                    <td className="px-4 py-3 text-muted-foreground">
+                                        {page.sort_order}
+                                    </td>
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-2">
-                                            <Button asChild size="sm" variant="outline">
+                                            <Button
+                                                asChild
+                                                size="sm"
+                                                variant="outline"
+                                            >
                                                 <Link
-                                                    href={PageController.edit.url({
-                                                        current_team: teamSlug,
-                                                        page: page.id,
-                                                    })}
+                                                    href={PageController.edit.url(
+                                                        {
+                                                            current_team:
+                                                                teamSlug,
+                                                            page: page.id,
+                                                        },
+                                                    )}
                                                 >
                                                     Edit
                                                 </Link>
@@ -81,7 +122,9 @@ export default function CmsPagesIndex({ pages }: Props) {
                                             <Button
                                                 size="sm"
                                                 variant="destructive"
-                                                onClick={() => handleDelete(page)}
+                                                onClick={() =>
+                                                    handleDelete(page)
+                                                }
                                             >
                                                 Hapus
                                             </Button>

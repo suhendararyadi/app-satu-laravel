@@ -41,7 +41,10 @@ export default function CmsPagesCreate() {
             <Head title="Tambah Halaman" />
 
             <div className="px-4 py-6">
-                <Heading title="Tambah Halaman" description="Buat halaman statis baru untuk website sekolah" />
+                <Heading
+                    title="Tambah Halaman"
+                    description="Buat halaman statis baru untuk website sekolah"
+                />
 
                 <form onSubmit={submit} className="mt-6 max-w-2xl space-y-6">
                     <div className="grid gap-2">
@@ -60,7 +63,9 @@ export default function CmsPagesCreate() {
                         <Input
                             id="slug"
                             value={form.data.slug}
-                            onChange={(e) => form.setData('slug', e.target.value)}
+                            onChange={(e) =>
+                                form.setData('slug', e.target.value)
+                            }
                             placeholder="slug-halaman"
                         />
                         <InputError message={form.errors.slug} />
@@ -71,10 +76,12 @@ export default function CmsPagesCreate() {
                         <textarea
                             id="content"
                             value={form.data.content}
-                            onChange={(e) => form.setData('content', e.target.value)}
+                            onChange={(e) =>
+                                form.setData('content', e.target.value)
+                            }
                             placeholder="Konten halaman"
                             rows={8}
-                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                         />
                         <InputError message={form.errors.content} />
                     </div>
@@ -85,21 +92,30 @@ export default function CmsPagesCreate() {
                             id="sort_order"
                             type="number"
                             value={form.data.sort_order}
-                            onChange={(e) => form.setData('sort_order', Number(e.target.value))}
+                            onChange={(e) =>
+                                form.setData(
+                                    'sort_order',
+                                    Number(e.target.value),
+                                )
+                            }
                             placeholder="0"
                         />
                         <InputError message={form.errors.sort_order} />
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="meta_description">Meta Description</Label>
+                        <Label htmlFor="meta_description">
+                            Meta Description
+                        </Label>
                         <textarea
                             id="meta_description"
                             value={form.data.meta_description}
-                            onChange={(e) => form.setData('meta_description', e.target.value)}
+                            onChange={(e) =>
+                                form.setData('meta_description', e.target.value)
+                            }
                             placeholder="Deskripsi singkat untuk SEO (opsional)"
                             rows={3}
-                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                         />
                         <InputError message={form.errors.meta_description} />
                     </div>
@@ -108,7 +124,9 @@ export default function CmsPagesCreate() {
                         <Checkbox
                             id="is_published"
                             checked={form.data.is_published}
-                            onCheckedChange={(checked) => form.setData('is_published', checked === true)}
+                            onCheckedChange={(checked) =>
+                                form.setData('is_published', checked === true)
+                            }
                         />
                         <Label htmlFor="is_published">Diterbitkan</Label>
                         <InputError message={form.errors.is_published} />
@@ -119,7 +137,9 @@ export default function CmsPagesCreate() {
                             Simpan
                         </Button>
                         <Button asChild variant="outline">
-                            <Link href={PageController.index.url(teamSlug)}>Batal</Link>
+                            <Link href={PageController.index.url(teamSlug)}>
+                                Batal
+                            </Link>
                         </Button>
                     </div>
                 </form>
