@@ -3,6 +3,7 @@ import {
     BookOpen,
     FileText,
     FolderGit2,
+    FolderOpen,
     Images,
     LayoutGrid,
     Newspaper,
@@ -54,7 +55,7 @@ export function AppSidebar() {
     const cmsNavGroups: NavGroup[] = [
         {
             title: 'Manajemen Konten',
-            icon: FileText,
+            icon: FolderOpen,
             items: [
                 {
                     title: 'Halaman',
