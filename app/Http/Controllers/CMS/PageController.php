@@ -70,7 +70,19 @@ class PageController extends Controller
         $team = $request->user()->currentTeam;
         abort_if($page->team_id !== $team->id, 403);
 
-        $page->update($request->validated());
+        $validated = $request->validated();
+
+        if ($validated['title'] !== $page->title) {
+            $slug = Str::slug($validated['title']);
+            abort_if(
+                $team->pages()->where('slug', $slug)->where('id', '!=', $page->id)->exists(),
+                422,
+                'Slug sudah digunakan.'
+            );
+            $validated['slug'] = $slug;
+        }
+
+        $page->update($validated);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Page updated.')]);
 
