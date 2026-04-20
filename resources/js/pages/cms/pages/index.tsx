@@ -1,5 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import PageController from '@/actions/App/Http/Controllers/CMS/PageController';
+import ConfirmDeleteDialog from '@/components/confirm-delete-dialog';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,18 +15,25 @@ export default function CmsPagesIndex({ pages }: Props) {
     const { currentTeam } = usePage().props;
     const teamSlug = currentTeam?.slug ?? '';
 
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [pendingPage, setPendingPage] = useState<Page | null>(null);
+
     function handleDelete(page: Page) {
-        if (!window.confirm(`Hapus halaman "${page.title}"?`)) {
-            return;
-        }
+        setPendingPage(page);
+        setConfirmOpen(true);
+    }
+
+    function executeDelete() {
+        if (!pendingPage) return;
 
         router.delete(
             PageController.destroy.url({
                 current_team: teamSlug,
-                page: page.id,
+                page: pendingPage.id,
             }),
             {
                 preserveScroll: true,
+                onFinish: () => setConfirmOpen(false),
             },
         );
     }
@@ -136,6 +145,13 @@ export default function CmsPagesIndex({ pages }: Props) {
                     </table>
                 </div>
             </div>
+
+            <ConfirmDeleteDialog
+                open={confirmOpen}
+                onOpenChange={setConfirmOpen}
+                title={`Hapus halaman "${pendingPage?.title}"?`}
+                onConfirm={executeDelete}
+            />
         </>
     );
 }
