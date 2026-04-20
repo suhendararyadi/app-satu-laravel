@@ -12,6 +12,9 @@ use Inertia\Response;
 
 class SchoolProfileController extends Controller
 {
+    /**
+     * Show the school profile edit page.
+     */
     public function edit(Request $request): Response
     {
         return Inertia::render('school/profile', [
@@ -19,6 +22,9 @@ class SchoolProfileController extends Controller
         ]);
     }
 
+    /**
+     * Update the school profile.
+     */
     public function update(UpdateSchoolProfileRequest $request): RedirectResponse
     {
         $team = $request->user()->currentTeam;
