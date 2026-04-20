@@ -14,7 +14,7 @@ interface Props {
     onOpenChange: (open: boolean) => void;
     title: string;
     description?: string;
-    onConfirm: () => void;
+    onConfirm: () => void | Promise<void>;
     processing?: boolean;
 }
 
@@ -40,7 +40,12 @@ export default function ConfirmDeleteDialog({
                         Batal
                     </AlertDialogCancel>
                     <AlertDialogAction
-                        onClick={onConfirm}
+                        onClick={(e) => {
+                            if (processing) {
+                                e.preventDefault();
+                            }
+                            onConfirm();
+                        }}
                         disabled={processing}
                         className="bg-destructive text-white hover:bg-destructive/90"
                     >
