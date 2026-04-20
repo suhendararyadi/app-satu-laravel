@@ -50,6 +50,8 @@ class PostController extends Controller
             $path = Storage::disk('public')->put('posts', $request->file('featured_image'));
         }
 
+        unset($validated['featured_image']);
+
         $team->posts()->create([
             ...$validated,
             'slug' => $slug,
@@ -69,6 +71,8 @@ class PostController extends Controller
     {
         $team = $request->user()->currentTeam;
         abort_if($post->team_id !== $team->id, 403);
+
+        $post->load('author');
 
         return Inertia::render('cms/posts/edit', ['post' => $post]);
     }
