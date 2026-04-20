@@ -1,13 +1,14 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import * as GalleryController from '@/actions/App/Http/Controllers/CMS/GalleryController';
+import ConfirmDeleteDialog from '@/components/confirm-delete-dialog';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { Gallery } from '@/types/school';
+import type { Gallery, GalleryImage } from '@/types/school';
 
 interface Props {
     gallery: Gallery;
@@ -25,6 +26,9 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
 
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [caption, setCaption] = useState('');
+
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [pendingImage, setPendingImage] = useState<GalleryImage | null>(null);
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
@@ -66,18 +70,27 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
         );
     }
 
-    function deleteImage(imageId: number) {
-        if (!window.confirm('Hapus gambar ini?')) {
-            return;
-        }
+    function handleDeleteImage(image: GalleryImage) {
+        setPendingImage(image);
+        setConfirmOpen(true);
+    }
+
+    function executeDeleteImage() {
+        if (!pendingImage) return;
 
         router.delete(
             GalleryController.destroyImage.url({
                 current_team: teamSlug,
                 gallery: gallery.id,
-                image: imageId,
+                image: pendingImage.id,
             }),
-            { preserveScroll: true },
+            {
+                preserveScroll: true,
+                onFinish: () => {
+                    setConfirmOpen(false);
+                    setPendingImage(null);
+                },
+            },
         );
     }
 
@@ -175,7 +188,7 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
                                             variant="destructive"
                                             className="w-full"
                                             onClick={() =>
-                                                deleteImage(image.id)
+                                                handleDeleteImage(image)
                                             }
                                         >
                                             Hapus
@@ -223,6 +236,16 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
                     </div>
                 </div>
             </div>
+
+            <ConfirmDeleteDialog
+                open={confirmOpen}
+                onOpenChange={(open) => {
+                    setConfirmOpen(open);
+                    if (!open) setPendingImage(null);
+                }}
+                title="Hapus foto ini?"
+                onConfirm={executeDeleteImage}
+            />
         </>
     );
 }
