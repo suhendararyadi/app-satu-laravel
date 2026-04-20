@@ -1,7 +1,20 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import {
+    BookOpen,
+    FileText,
+    FolderGit2,
+    Images,
+    LayoutGrid,
+    Newspaper,
+    School,
+} from 'lucide-react';
+import GalleryController from '@/actions/App/Http/Controllers/CMS/GalleryController';
+import PageController from '@/actions/App/Http/Controllers/CMS/PageController';
+import PostController from '@/actions/App/Http/Controllers/CMS/PostController';
+import SchoolProfileController from '@/actions/App/Http/Controllers/School/SchoolProfileController';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
+import { NavGroups } from '@/components/nav-groups';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { TeamSwitcher } from '@/components/team-switcher';
@@ -15,19 +28,50 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import type { NavItem } from '@/types';
+import type { NavGroup, NavItem } from '@/types';
 
 export function AppSidebar() {
     const page = usePage();
-    const dashboardUrl = page.props.currentTeam
-        ? dashboard(page.props.currentTeam.slug)
-        : '/';
+    const slug = page.props.currentTeam?.slug ?? '';
+    const dashboardUrl = slug ? dashboard(slug) : '/';
 
     const mainNavItems: NavItem[] = [
         {
             title: 'Dashboard',
             href: dashboardUrl,
             icon: LayoutGrid,
+        },
+    ];
+
+    const schoolNavItems: NavItem[] = [
+        {
+            title: 'Profil Sekolah',
+            href: slug ? SchoolProfileController.edit.url(slug) : '/',
+            icon: School,
+        },
+    ];
+
+    const cmsNavGroups: NavGroup[] = [
+        {
+            title: 'Manajemen Konten',
+            icon: FileText,
+            items: [
+                {
+                    title: 'Halaman',
+                    href: slug ? PageController.index.url(slug) : '/',
+                    icon: FileText,
+                },
+                {
+                    title: 'Artikel',
+                    href: slug ? PostController.index.url(slug) : '/',
+                    icon: Newspaper,
+                },
+                {
+                    title: 'Galeri',
+                    href: slug ? GalleryController.index.url(slug) : '/',
+                    icon: Images,
+                },
+            ],
         },
     ];
 
@@ -65,6 +109,8 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={mainNavItems} />
+                <NavMain items={schoolNavItems} label="Sekolah" />
+                <NavGroups groups={cmsNavGroups} label="Konten" />
             </SidebarContent>
 
             <SidebarFooter>
