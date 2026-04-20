@@ -1,10 +1,11 @@
 <?php
 
+use App\Enums\TeamRole;
+use App\Models\Team;
 use App\Models\User;
 
 test('guests are redirected to the login page', function () {
     $user = User::factory()->create();
-    $team = $user->currentTeam;
 
     $response = $this->get(route('dashboard'));
     $response->assertRedirect(route('login'));
@@ -12,11 +13,38 @@ test('guests are redirected to the login page', function () {
 
 test('authenticated users can visit the dashboard', function () {
     $user = User::factory()->create();
-    $team = $user->currentTeam;
 
     $response = $this
         ->actingAs($user)
         ->get(route('dashboard'));
 
     $response->assertOk();
+});
+
+test('dashboard passes hasSchoolTeam false when user has no school team', function () {
+    $user = User::factory()->create();
+    // User::factory() auto-creates a personal team only (is_personal=true)
+
+    $this->withoutVite()
+        ->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertInertia(fn ($page) => $page
+            ->component('dashboard')
+            ->where('hasSchoolTeam', false)
+        );
+});
+
+test('dashboard passes hasSchoolTeam true when user has a school team', function () {
+    $user = User::factory()->create();
+    $schoolTeam = Team::factory()->create(); // default is_personal=false
+
+    $schoolTeam->members()->attach($user, ['role' => TeamRole::Owner->value]);
+
+    $this->withoutVite()
+        ->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertInertia(fn ($page) => $page
+            ->component('dashboard')
+            ->where('hasSchoolTeam', true)
+        );
 });
