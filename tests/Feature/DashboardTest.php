@@ -23,7 +23,6 @@ test('authenticated users can visit the dashboard', function () {
 
 test('dashboard passes hasSchoolTeam false when user has no school team', function () {
     $user = User::factory()->create();
-    // User::factory() auto-creates a personal team only (is_personal=true)
 
     $this->withoutVite()
         ->actingAs($user)
@@ -36,7 +35,7 @@ test('dashboard passes hasSchoolTeam false when user has no school team', functi
 
 test('dashboard passes hasSchoolTeam true when user has a school team', function () {
     $user = User::factory()->create();
-    $schoolTeam = Team::factory()->create(); // default is_personal=false
+    $schoolTeam = Team::factory()->create(['is_personal' => false]);
 
     $schoolTeam->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
