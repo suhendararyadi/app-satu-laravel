@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CMS\GalleryController;
 use App\Http\Controllers\CMS\PageController;
 use App\Http\Controllers\CMS\PostController;
 use App\Http\Controllers\School\SchoolProfileController;
@@ -37,4 +38,18 @@ Route::middleware(['auth', 'verified', EnsureTeamMembership::class.':admin'])
                 'destroy' => 'posts.destroy',
             ])
             ->except(['show']);
+
+        // CMS Galleries
+        Route::resource('cms/galleries', GalleryController::class)
+            ->names([
+                'index' => 'galleries.index',
+                'create' => 'galleries.create',
+                'store' => 'galleries.store',
+                'edit' => 'galleries.edit',
+                'update' => 'galleries.update',
+                'destroy' => 'galleries.destroy',
+            ])
+            ->except(['show']);
+        Route::post('cms/galleries/{gallery}/images', [GalleryController::class, 'storeImage'])->name('galleries.images.store');
+        Route::delete('cms/galleries/{gallery}/images/{image}', [GalleryController::class, 'destroyImage'])->name('galleries.images.destroy');
     });
