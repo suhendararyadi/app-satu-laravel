@@ -1,5 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import * as PostController from '@/actions/App/Http/Controllers/CMS/PostController';
+import ConfirmDeleteDialog from '@/components/confirm-delete-dialog';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,18 +15,28 @@ export default function CmsPostsIndex({ posts }: Props) {
     const { currentTeam } = usePage().props;
     const teamSlug = currentTeam?.slug ?? '';
 
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [pendingPost, setPendingPost] = useState<Post | null>(null);
+
     function handleDelete(post: Post) {
-        if (!window.confirm(`Hapus artikel "${post.title}"?`)) {
-            return;
-        }
+        setPendingPost(post);
+        setConfirmOpen(true);
+    }
+
+    function executeDelete() {
+        if (!pendingPost) return;
 
         router.delete(
             PostController.destroy.url({
                 current_team: teamSlug,
-                post: post.id,
+                post: pendingPost.id,
             }),
             {
                 preserveScroll: true,
+                onFinish: () => {
+                    setConfirmOpen(false);
+                    setPendingPost(null);
+                },
             },
         );
     }
@@ -136,6 +148,16 @@ export default function CmsPostsIndex({ posts }: Props) {
                     </table>
                 </div>
             </div>
+
+            <ConfirmDeleteDialog
+                open={confirmOpen}
+                onOpenChange={(open) => {
+                    setConfirmOpen(open);
+                    if (!open) setPendingPost(null);
+                }}
+                title={`Hapus artikel "${pendingPost?.title}"?`}
+                onConfirm={executeDelete}
+            />
         </>
     );
 }
