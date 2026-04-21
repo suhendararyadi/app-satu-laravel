@@ -24,7 +24,9 @@ export default function CmsPostsIndex({ posts }: Props) {
     }
 
     function executeDelete() {
-        if (!pendingPost) return;
+        if (!pendingPost) {
+            return;
+        }
 
         router.delete(
             PostController.destroy.url({
@@ -153,7 +155,10 @@ export default function CmsPostsIndex({ posts }: Props) {
                 open={confirmOpen}
                 onOpenChange={(open) => {
                     setConfirmOpen(open);
-                    if (!open) setPendingPost(null);
+
+                    if (!open) {
+                        setPendingPost(null);
+                    }
                 }}
                 title={`Hapus artikel "${pendingPost?.title}"?`}
                 onConfirm={executeDelete}

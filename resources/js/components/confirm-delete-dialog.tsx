@@ -12,7 +12,7 @@ import {
 interface Props {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    title: string;
+    title?: string;
     description?: string;
     onConfirm: () => void | Promise<void>;
     processing?: boolean;
@@ -21,7 +21,7 @@ interface Props {
 export default function ConfirmDeleteDialog({
     open,
     onOpenChange,
-    title,
+    title = 'Konfirmasi Hapus',
     description = 'Tindakan ini tidak bisa dibatalkan.',
     onConfirm,
     processing = false,
@@ -44,6 +44,7 @@ export default function ConfirmDeleteDialog({
                             if (processing) {
                                 e.preventDefault();
                             }
+
                             onConfirm();
                         }}
                         disabled={processing}

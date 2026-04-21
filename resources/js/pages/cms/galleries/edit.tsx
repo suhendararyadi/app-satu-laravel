@@ -76,7 +76,9 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
     }
 
     function executeDeleteImage() {
-        if (!pendingImage) return;
+        if (!pendingImage) {
+            return;
+        }
 
         router.delete(
             GalleryController.destroyImage.url({
@@ -241,7 +243,10 @@ export default function CmsGalleriesEdit({ gallery }: Props) {
                 open={confirmOpen}
                 onOpenChange={(open) => {
                     setConfirmOpen(open);
-                    if (!open) setPendingImage(null);
+
+                    if (!open) {
+                        setPendingImage(null);
+                    }
                 }}
                 title="Hapus foto ini?"
                 onConfirm={executeDeleteImage}

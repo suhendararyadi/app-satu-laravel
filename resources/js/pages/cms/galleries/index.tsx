@@ -24,7 +24,9 @@ export default function CmsGalleriesIndex({ galleries }: Props) {
     }
 
     function executeDelete() {
-        if (!pendingGallery) return;
+        if (!pendingGallery) {
+            return;
+        }
 
         router.delete(
             GalleryController.destroy.url({
@@ -149,7 +151,10 @@ export default function CmsGalleriesIndex({ galleries }: Props) {
                 open={confirmOpen}
                 onOpenChange={(open) => {
                     setConfirmOpen(open);
-                    if (!open) setPendingGallery(null);
+
+                    if (!open) {
+                        setPendingGallery(null);
+                    }
                 }}
                 title={`Hapus galeri "${pendingGallery?.title}"?`}
                 onConfirm={executeDelete}

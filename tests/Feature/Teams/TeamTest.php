@@ -89,7 +89,7 @@ test('teams cannot be updated by members', function () {
     $team = Team::factory()->create();
 
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Student->value]);
 
     $response = $this
         ->actingAs($member)
@@ -220,7 +220,7 @@ test('deleting team switches other affected users to their personal team', funct
 
     $team = Team::factory()->create();
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Student->value]);
 
     $owner->update(['current_team_id' => $team->id]);
     $member->update(['current_team_id' => $team->id]);
@@ -261,7 +261,7 @@ test('teams cannot be deleted by non owners', function () {
     $team = Team::factory()->create();
 
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Student->value]);
 
     $response = $this
         ->actingAs($member)
@@ -276,7 +276,7 @@ test('users can switch teams', function () {
     $user = User::factory()->create();
     $team = Team::factory()->create();
 
-    $team->members()->attach($user, ['role' => TeamRole::Member->value]);
+    $team->members()->attach($user, ['role' => TeamRole::Student->value]);
 
     $response = $this
         ->actingAs($user)

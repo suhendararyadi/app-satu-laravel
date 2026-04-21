@@ -24,7 +24,9 @@ export default function CmsPagesIndex({ pages }: Props) {
     }
 
     function executeDelete() {
-        if (!pendingPage) return;
+        if (!pendingPage) {
+            return;
+        }
 
         router.delete(
             PageController.destroy.url({
@@ -153,7 +155,10 @@ export default function CmsPagesIndex({ pages }: Props) {
                 open={confirmOpen}
                 onOpenChange={(open) => {
                     setConfirmOpen(open);
-                    if (!open) setPendingPage(null);
+
+                    if (!open) {
+                        setPendingPage(null);
+                    }
                 }}
                 title={`Hapus halaman "${pendingPage?.title}"?`}
                 onConfirm={executeDelete}

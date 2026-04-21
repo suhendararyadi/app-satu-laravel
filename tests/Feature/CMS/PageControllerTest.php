@@ -152,7 +152,7 @@ test('update returns 422 when new slug already exists for team', function () {
 test('member gets 403 on pages index', function () {
     $team = Team::factory()->create();
     $member = User::factory()->create();
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Student->value]);
     $member->switchTeam($team);
 
     $this->actingAs($member)

@@ -28,7 +28,7 @@ test('admin can access school profile edit page', function () {
 test('member gets 403 on school profile edit page', function () {
     $team = Team::factory()->create();
     $member = User::factory()->create();
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Student->value]);
     $member->switchTeam($team);
 
     $this->actingAs($member)

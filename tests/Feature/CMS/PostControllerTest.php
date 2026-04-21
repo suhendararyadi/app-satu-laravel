@@ -167,7 +167,7 @@ test('destroy deletes post and removes featured image from storage', function ()
 test('member gets 403 on posts index', function () {
     $team = Team::factory()->create();
     $member = User::factory()->create();
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Student->value]);
     $member->switchTeam($team);
 
     $this->actingAs($member)

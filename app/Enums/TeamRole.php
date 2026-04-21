@@ -6,52 +6,40 @@ enum TeamRole: string
 {
     case Owner = 'owner';
     case Admin = 'admin';
-    case Member = 'member';
+    case Teacher = 'teacher';
+    case Student = 'student';
+    case Parent = 'parent';
 
-    /**
-     * Get the display label for the role.
-     */
     public function label(): string
     {
-        return ucfirst($this->value);
-    }
-
-    /**
-     * Get all the permissions for this role.
-     *
-     * @return array<TeamPermission>
-     */
-    public function permissions(): array
-    {
         return match ($this) {
-            self::Owner => TeamPermission::cases(),
-            self::Admin => [
-                TeamPermission::UpdateTeam,
-                TeamPermission::CreateInvitation,
-                TeamPermission::CancelInvitation,
-            ],
-            self::Member => [],
+            self::Owner => 'Pemilik',
+            self::Admin => 'Admin',
+            self::Teacher => 'Guru',
+            self::Student => 'Siswa',
+            self::Parent => 'Orang Tua',
         };
     }
 
-    /**
-     * Determine if the role has the given permission.
-     */
-    public function hasPermission(TeamPermission $permission): bool
+    public function permissions(): array
     {
-        return in_array($permission, $this->permissions());
+        return match ($this) {
+            self::Owner => ['*'],
+            self::Admin => ['manage-team', 'manage-content', 'manage-academic'],
+            self::Teacher => [],
+            self::Student => [],
+            self::Parent => [],
+        };
     }
 
-    /**
-     * Get the hierarchy level for this role.
-     * Higher numbers indicate higher privileges.
-     */
     public function level(): int
     {
         return match ($this) {
-            self::Owner => 3,
-            self::Admin => 2,
-            self::Member => 1,
+            self::Owner => 5,
+            self::Admin => 4,
+            self::Teacher => 3,
+            self::Student => 2,
+            self::Parent => 1,
         };
     }
 
@@ -61,6 +49,35 @@ enum TeamRole: string
     public function isAtLeast(TeamRole $role): bool
     {
         return $this->level() >= $role->level();
+    }
+
+    /**
+     * Determine if the role has the given TeamPermission.
+     */
+    public function hasPermission(TeamPermission $permission): bool
+    {
+        $permissions = $this->permissions();
+
+        if (in_array('*', $permissions)) {
+            return true;
+        }
+
+        // Map string-based permissions to legacy TeamPermission cases
+        $permissionMap = [
+            'manage-team' => [
+                TeamPermission::UpdateTeam,
+                TeamPermission::CreateInvitation,
+                TeamPermission::CancelInvitation,
+            ],
+        ];
+
+        foreach ($permissionMap as $stringPerm => $teamPerms) {
+            if (in_array($stringPerm, $permissions) && in_array($permission, $teamPerms)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

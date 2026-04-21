@@ -5,6 +5,11 @@ namespace App\Models;
 use App\Concerns\GeneratesUniqueTeamSlugs;
 use App\Enums\SchoolType;
 use App\Enums\TeamRole;
+use App\Models\Academic\AcademicYear;
+use App\Models\Academic\Classroom;
+use App\Models\Academic\Grade;
+use App\Models\Academic\Subject;
+use App\Models\Academic\TeacherAssignment;
 use Database\Factories\TeamFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -131,6 +136,56 @@ class Team extends Model
     public function galleries(): HasMany
     {
         return $this->hasMany(Gallery::class);
+    }
+
+    /**
+     * Get all academic years for this team.
+     *
+     * @return HasMany<AcademicYear, $this>
+     */
+    public function academicYears(): HasMany
+    {
+        return $this->hasMany(AcademicYear::class);
+    }
+
+    /**
+     * Get all grades for this team.
+     *
+     * @return HasMany<Grade, $this>
+     */
+    public function grades(): HasMany
+    {
+        return $this->hasMany(Grade::class);
+    }
+
+    /**
+     * Get all subjects for this team.
+     *
+     * @return HasMany<Subject, $this>
+     */
+    public function subjects(): HasMany
+    {
+        return $this->hasMany(Subject::class);
+    }
+
+    /**
+     * Get all classrooms for this team.
+     *
+     * @return HasMany<Classroom, $this>
+     */
+    public function classrooms(): HasMany
+    {
+        return $this->hasMany(Classroom::class);
+    }
+
+    /**
+     * Get all teacher assignments for this team.
+     *
+     * @return HasMany<TeacherAssignment, $this>
+     */
+    public function teacherAssignments(): HasMany
+    {
+        return $this->hasMany(TeacherAssignment::class);
     }
 
     /**

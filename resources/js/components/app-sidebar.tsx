@@ -1,14 +1,25 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
     BookOpen,
+    BookOpenCheck,
+    Calendar,
+    ClipboardList,
     FileText,
     FolderGit2,
     FolderOpen,
+    GraduationCap,
     Images,
+    Layers,
     LayoutGrid,
     Newspaper,
     School,
+    Users,
 } from 'lucide-react';
+import AcademicYearController from '@/actions/App/Http/Controllers/Academic/AcademicYearController';
+import ClassroomController from '@/actions/App/Http/Controllers/Academic/ClassroomController';
+import GradeController from '@/actions/App/Http/Controllers/Academic/GradeController';
+import SubjectController from '@/actions/App/Http/Controllers/Academic/SubjectController';
+import TeacherAssignmentController from '@/actions/App/Http/Controllers/Academic/TeacherAssignmentController';
 import GalleryController from '@/actions/App/Http/Controllers/CMS/GalleryController';
 import PageController from '@/actions/App/Http/Controllers/CMS/PageController';
 import PostController from '@/actions/App/Http/Controllers/CMS/PostController';
@@ -49,6 +60,42 @@ export function AppSidebar() {
             title: 'Profil Sekolah',
             href: slug ? SchoolProfileController.edit.url(slug) : '/',
             icon: School,
+        },
+    ];
+
+    const academicNavGroups: NavGroup[] = [
+        {
+            title: 'Akademik',
+            icon: GraduationCap,
+            items: [
+                {
+                    title: 'Tahun Ajaran',
+                    href: slug ? AcademicYearController.index.url(slug) : '/',
+                    icon: Calendar,
+                },
+                {
+                    title: 'Tingkat',
+                    href: slug ? GradeController.index.url(slug) : '/',
+                    icon: Layers,
+                },
+                {
+                    title: 'Mata Pelajaran',
+                    href: slug ? SubjectController.index.url(slug) : '/',
+                    icon: BookOpenCheck,
+                },
+                {
+                    title: 'Kelas',
+                    href: slug ? ClassroomController.index.url(slug) : '/',
+                    icon: Users,
+                },
+                {
+                    title: 'Penugasan Guru',
+                    href: slug
+                        ? TeacherAssignmentController.index.url(slug)
+                        : '/',
+                    icon: ClipboardList,
+                },
+            ],
         },
     ];
 
@@ -112,6 +159,7 @@ export function AppSidebar() {
                 <NavMain items={mainNavItems} />
                 <NavMain items={schoolNavItems} label="Sekolah" />
                 <NavGroups groups={cmsNavGroups} label="Konten" />
+                <NavGroups groups={academicNavGroups} label="Akademik" />
             </SidebarContent>
 
             <SidebarFooter>

@@ -18,7 +18,7 @@ test('team invitations can be created', function () {
         ->actingAs($owner)
         ->post(route('teams.invitations.store', $team), [
             'email' => 'invited@example.com',
-            'role' => TeamRole::Member->value,
+            'role' => TeamRole::Student->value,
         ]);
 
     $response->assertRedirect(route('teams.edit', $team));
@@ -26,7 +26,7 @@ test('team invitations can be created', function () {
     $this->assertDatabaseHas('team_invitations', [
         'team_id' => $team->id,
         'email' => 'invited@example.com',
-        'role' => TeamRole::Member->value,
+        'role' => TeamRole::Student->value,
     ]);
 });
 
@@ -44,7 +44,7 @@ test('team invitations can be created by admins', function () {
         ->actingAs($admin)
         ->post(route('teams.invitations.store', $team), [
             'email' => 'invited@example.com',
-            'role' => TeamRole::Member->value,
+            'role' => TeamRole::Student->value,
         ]);
 
     $response->assertRedirect(route('teams.edit', $team));
@@ -58,13 +58,13 @@ test('existing team members cannot be invited', function () {
     $team = Team::factory()->create();
 
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Student->value]);
 
     $response = $this
         ->actingAs($owner)
         ->post(route('teams.invitations.store', $team), [
             'email' => 'member@example.com',
-            'role' => TeamRole::Member->value,
+            'role' => TeamRole::Student->value,
         ]);
 
     $response->assertSessionHasErrors('email');
@@ -87,7 +87,7 @@ test('duplicate invitations cannot be created', function () {
         ->actingAs($owner)
         ->post(route('teams.invitations.store', $team), [
             'email' => 'invited@example.com',
-            'role' => TeamRole::Member->value,
+            'role' => TeamRole::Student->value,
         ]);
 
     $response->assertSessionHasErrors('email');
@@ -99,13 +99,13 @@ test('team invitations cannot be created by members', function () {
     $team = Team::factory()->create();
 
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
-    $team->members()->attach($member, ['role' => TeamRole::Member->value]);
+    $team->members()->attach($member, ['role' => TeamRole::Student->value]);
 
     $response = $this
         ->actingAs($member)
         ->post(route('teams.invitations.store', $team), [
             'email' => 'invited@example.com',
-            'role' => TeamRole::Member->value,
+            'role' => TeamRole::Student->value,
         ]);
 
     $response->assertForbidden();
@@ -143,7 +143,7 @@ test('team invitations can be accepted', function () {
     $invitation = TeamInvitation::factory()->create([
         'team_id' => $team->id,
         'email' => 'invited@example.com',
-        'role' => TeamRole::Member,
+        'role' => TeamRole::Student,
         'invited_by' => $owner->id,
     ]);
 
