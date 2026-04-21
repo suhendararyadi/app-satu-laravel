@@ -46,7 +46,11 @@ export default function Index({ attendances }: Props) {
                         title="Absensi"
                         action={
                             <Button asChild>
-                                <Link href={AttendanceController.create.url(teamSlug)}>
+                                <Link
+                                    href={AttendanceController.create.url(
+                                        teamSlug,
+                                    )}
+                                >
                                     Input Absensi
                                 </Link>
                             </Button>
@@ -59,7 +63,8 @@ export default function Index({ attendances }: Props) {
                         emptyState={{
                             icon: ClipboardListIcon,
                             title: 'Belum ada data absensi',
-                            description: 'Mulai input absensi untuk kelas Anda.',
+                            description:
+                                'Mulai input absensi untuk kelas Anda.',
                             action: {
                                 label: 'Input Absensi',
                                 href: AttendanceController.create.url(teamSlug),
@@ -81,21 +86,34 @@ export default function Index({ attendances }: Props) {
                                     <TableRow key={att.id}>
                                         <TableCell>{att.date}</TableCell>
                                         <TableCell>
-                                            {(att.classroom as { name?: string })?.name ?? '-'}
+                                            {(
+                                                att.classroom as {
+                                                    name?: string;
+                                                }
+                                            )?.name ?? '-'}
                                         </TableCell>
                                         <TableCell>
-                                            {(att.subject as { name?: string })?.name ?? 'Harian'}
+                                            {(att.subject as { name?: string })
+                                                ?.name ?? 'Harian'}
                                         </TableCell>
                                         <TableCell>
-                                            {(att.semester as { name?: string })?.name ?? '-'}
+                                            {(att.semester as { name?: string })
+                                                ?.name ?? '-'}
                                         </TableCell>
                                         <TableCell>
-                                            <Button size="sm" variant="outline" asChild>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                asChild
+                                            >
                                                 <Link
-                                                    href={AttendanceController.show.url({
-                                                        current_team: teamSlug,
-                                                        attendance: att.id,
-                                                    })}
+                                                    href={AttendanceController.show.url(
+                                                        {
+                                                            current_team:
+                                                                teamSlug,
+                                                            attendance: att.id,
+                                                        },
+                                                    )}
                                                 >
                                                     Detail
                                                 </Link>

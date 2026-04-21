@@ -61,7 +61,11 @@ export default function Index({ schedules }: Props) {
                         title="Jadwal Pelajaran"
                         action={
                             <Button asChild>
-                                <Link href={ScheduleController.create.url(teamSlug)}>
+                                <Link
+                                    href={ScheduleController.create.url(
+                                        teamSlug,
+                                    )}
+                                >
                                     Tambah Jadwal
                                 </Link>
                             </Button>
@@ -74,7 +78,8 @@ export default function Index({ schedules }: Props) {
                         emptyState={{
                             icon: CalendarDaysIcon,
                             title: 'Belum ada jadwal pelajaran',
-                            description: 'Tambah jadwal pelajaran untuk memulai.',
+                            description:
+                                'Tambah jadwal pelajaran untuk memulai.',
                             action: {
                                 label: 'Tambah Jadwal',
                                 href: ScheduleController.create.url(teamSlug),
@@ -96,27 +101,55 @@ export default function Index({ schedules }: Props) {
                             <TableBody>
                                 {schedules.map((schedule) => (
                                     <TableRow key={schedule.id}>
-                                        <TableCell>{schedule.day_of_week}</TableCell>
                                         <TableCell>
-                                            {(schedule.time_slot as { name?: string })?.name ?? '-'}
+                                            {schedule.day_of_week}
                                         </TableCell>
                                         <TableCell>
-                                            {(schedule.classroom as { name?: string })?.name ?? '-'}
+                                            {(
+                                                schedule.time_slot as {
+                                                    name?: string;
+                                                }
+                                            )?.name ?? '-'}
                                         </TableCell>
                                         <TableCell>
-                                            {(schedule.subject as { name?: string })?.name ?? '-'}
+                                            {(
+                                                schedule.classroom as {
+                                                    name?: string;
+                                                }
+                                            )?.name ?? '-'}
                                         </TableCell>
                                         <TableCell>
-                                            {(schedule.teacher as { name?: string })?.name ?? '-'}
+                                            {(
+                                                schedule.subject as {
+                                                    name?: string;
+                                                }
+                                            )?.name ?? '-'}
                                         </TableCell>
-                                        <TableCell>{schedule.room ?? '-'}</TableCell>
+                                        <TableCell>
+                                            {(
+                                                schedule.teacher as {
+                                                    name?: string;
+                                                }
+                                            )?.name ?? '-'}
+                                        </TableCell>
+                                        <TableCell>
+                                            {schedule.room ?? '-'}
+                                        </TableCell>
                                         <TableCell className="space-x-2">
-                                            <Button size="sm" variant="outline" asChild>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                asChild
+                                            >
                                                 <Link
-                                                    href={ScheduleController.edit.url({
-                                                        current_team: teamSlug,
-                                                        schedule: schedule.id,
-                                                    })}
+                                                    href={ScheduleController.edit.url(
+                                                        {
+                                                            current_team:
+                                                                teamSlug,
+                                                            schedule:
+                                                                schedule.id,
+                                                        },
+                                                    )}
                                                 >
                                                     Edit
                                                 </Link>
@@ -124,7 +157,9 @@ export default function Index({ schedules }: Props) {
                                             <Button
                                                 size="sm"
                                                 variant="destructive"
-                                                onClick={() => handleDelete(schedule.id)}
+                                                onClick={() =>
+                                                    handleDelete(schedule.id)
+                                                }
                                             >
                                                 Hapus
                                             </Button>

@@ -65,7 +65,9 @@ export default function CmsPagesIndex({ pages }: Props) {
                         description="Kelola halaman statis website sekolah"
                         action={
                             <Button asChild>
-                                <Link href={PageController.create.url(teamSlug)}>
+                                <Link
+                                    href={PageController.create.url(teamSlug)}
+                                >
                                     Tambah Halaman
                                 </Link>
                             </Button>
@@ -78,7 +80,8 @@ export default function CmsPagesIndex({ pages }: Props) {
                         emptyState={{
                             icon: FileTextIcon,
                             title: 'Belum ada halaman',
-                            description: 'Tambah halaman statis pertama untuk website sekolah.',
+                            description:
+                                'Tambah halaman statis pertama untuk website sekolah.',
                             action: {
                                 label: 'Tambah Halaman',
                                 href: PageController.create.url(teamSlug),
@@ -98,15 +101,21 @@ export default function CmsPagesIndex({ pages }: Props) {
                             <TableBody>
                                 {pages.map((page) => (
                                     <TableRow key={page.id}>
-                                        <TableCell className="font-medium">{page.title}</TableCell>
+                                        <TableCell className="font-medium">
+                                            {page.title}
+                                        </TableCell>
                                         <TableCell className="text-muted-foreground">
                                             {page.slug}
                                         </TableCell>
                                         <TableCell>
                                             {page.is_published ? (
-                                                <Badge variant="default">Terbit</Badge>
+                                                <Badge variant="default">
+                                                    Terbit
+                                                </Badge>
                                             ) : (
-                                                <Badge variant="secondary">Draft</Badge>
+                                                <Badge variant="secondary">
+                                                    Draft
+                                                </Badge>
                                             )}
                                         </TableCell>
                                         <TableCell className="text-muted-foreground">
@@ -114,12 +123,19 @@ export default function CmsPagesIndex({ pages }: Props) {
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
-                                                <Button asChild size="sm" variant="outline">
+                                                <Button
+                                                    asChild
+                                                    size="sm"
+                                                    variant="outline"
+                                                >
                                                     <Link
-                                                        href={PageController.edit.url({
-                                                            current_team: teamSlug,
-                                                            page: page.id,
-                                                        })}
+                                                        href={PageController.edit.url(
+                                                            {
+                                                                current_team:
+                                                                    teamSlug,
+                                                                page: page.id,
+                                                            },
+                                                        )}
                                                     >
                                                         Edit
                                                     </Link>
@@ -127,7 +143,9 @@ export default function CmsPagesIndex({ pages }: Props) {
                                                 <Button
                                                     size="sm"
                                                     variant="destructive"
-                                                    onClick={() => handleDelete(page)}
+                                                    onClick={() =>
+                                                        handleDelete(page)
+                                                    }
                                                 >
                                                     Hapus
                                                 </Button>

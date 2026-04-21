@@ -61,7 +61,11 @@ export default function Index({ subjects }: Props) {
                         title="Mata Pelajaran"
                         action={
                             <Button asChild>
-                                <Link href={SubjectController.create.url(teamSlug)}>
+                                <Link
+                                    href={SubjectController.create.url(
+                                        teamSlug,
+                                    )}
+                                >
                                     Tambah Mata Pelajaran
                                 </Link>
                             </Button>
@@ -95,14 +99,23 @@ export default function Index({ subjects }: Props) {
                                         <TableCell className="font-medium">
                                             {subject.name}
                                         </TableCell>
-                                        <TableCell>{subject.code ?? '—'}</TableCell>
+                                        <TableCell>
+                                            {subject.code ?? '—'}
+                                        </TableCell>
                                         <TableCell className="space-x-2">
-                                            <Button size="sm" variant="outline" asChild>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                asChild
+                                            >
                                                 <Link
-                                                    href={SubjectController.edit.url({
-                                                        current_team: teamSlug,
-                                                        subject: subject.id,
-                                                    })}
+                                                    href={SubjectController.edit.url(
+                                                        {
+                                                            current_team:
+                                                                teamSlug,
+                                                            subject: subject.id,
+                                                        },
+                                                    )}
                                                 >
                                                     Edit
                                                 </Link>
@@ -110,7 +123,9 @@ export default function Index({ subjects }: Props) {
                                             <Button
                                                 size="sm"
                                                 variant="destructive"
-                                                onClick={() => handleDelete(subject.id)}
+                                                onClick={() =>
+                                                    handleDelete(subject.id)
+                                                }
                                             >
                                                 Hapus
                                             </Button>

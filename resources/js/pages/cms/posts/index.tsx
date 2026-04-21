@@ -65,7 +65,9 @@ export default function CmsPostsIndex({ posts }: Props) {
                         description="Kelola artikel dan berita website sekolah"
                         action={
                             <Button asChild>
-                                <Link href={PostController.create.url(teamSlug)}>
+                                <Link
+                                    href={PostController.create.url(teamSlug)}
+                                >
                                     Tulis Artikel
                                 </Link>
                             </Button>
@@ -78,7 +80,8 @@ export default function CmsPostsIndex({ posts }: Props) {
                         emptyState={{
                             icon: NewspaperIcon,
                             title: 'Belum ada artikel',
-                            description: 'Tulis artikel pertama untuk website sekolah.',
+                            description:
+                                'Tulis artikel pertama untuk website sekolah.',
                             action: {
                                 label: 'Tulis Artikel',
                                 href: PostController.create.url(teamSlug),
@@ -98,15 +101,21 @@ export default function CmsPostsIndex({ posts }: Props) {
                             <TableBody>
                                 {posts.map((post) => (
                                     <TableRow key={post.id}>
-                                        <TableCell className="font-medium">{post.title}</TableCell>
+                                        <TableCell className="font-medium">
+                                            {post.title}
+                                        </TableCell>
                                         <TableCell className="text-muted-foreground">
                                             {post.author.name}
                                         </TableCell>
                                         <TableCell>
                                             {post.is_published ? (
-                                                <Badge variant="default">Terbit</Badge>
+                                                <Badge variant="default">
+                                                    Terbit
+                                                </Badge>
                                             ) : (
-                                                <Badge variant="secondary">Draft</Badge>
+                                                <Badge variant="secondary">
+                                                    Draft
+                                                </Badge>
                                             )}
                                         </TableCell>
                                         <TableCell className="text-muted-foreground">
@@ -114,12 +123,19 @@ export default function CmsPostsIndex({ posts }: Props) {
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
-                                                <Button asChild size="sm" variant="outline">
+                                                <Button
+                                                    asChild
+                                                    size="sm"
+                                                    variant="outline"
+                                                >
                                                     <Link
-                                                        href={PostController.edit.url({
-                                                            current_team: teamSlug,
-                                                            post: post.id,
-                                                        })}
+                                                        href={PostController.edit.url(
+                                                            {
+                                                                current_team:
+                                                                    teamSlug,
+                                                                post: post.id,
+                                                            },
+                                                        )}
                                                     >
                                                         Edit
                                                     </Link>
@@ -127,7 +143,9 @@ export default function CmsPostsIndex({ posts }: Props) {
                                                 <Button
                                                     size="sm"
                                                     variant="destructive"
-                                                    onClick={() => handleDelete(post)}
+                                                    onClick={() =>
+                                                        handleDelete(post)
+                                                    }
                                                 >
                                                     Hapus
                                                 </Button>

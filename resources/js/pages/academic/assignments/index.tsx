@@ -103,7 +103,8 @@ export default function Index({
                         emptyState={{
                             icon: ClipboardIcon,
                             title: 'Belum ada penugasan guru',
-                            description: 'Tambah penugasan guru menggunakan form di bawah.',
+                            description:
+                                'Tambah penugasan guru menggunakan form di bawah.',
                         }}
                     >
                         <Table>
@@ -120,17 +121,27 @@ export default function Index({
                                 {assignments.map((assignment) => (
                                     <TableRow key={assignment.id}>
                                         <TableCell>
-                                            {(assignment.user as Teacher | undefined)?.name ?? '—'}
+                                            {(
+                                                assignment.user as
+                                                    | Teacher
+                                                    | undefined
+                                            )?.name ?? '—'}
                                         </TableCell>
                                         <TableCell>
-                                            {(assignment.subject as Subject | undefined)?.name ??
-                                                '—'}
+                                            {(
+                                                assignment.subject as
+                                                    | Subject
+                                                    | undefined
+                                            )?.name ?? '—'}
                                         </TableCell>
                                         <TableCell>
                                             {(() => {
-                                                const classroom = assignment.classroom as
-                                                    | (Classroom & { grade?: Grade })
-                                                    | undefined;
+                                                const classroom =
+                                                    assignment.classroom as
+                                                        | (Classroom & {
+                                                              grade?: Grade;
+                                                          })
+                                                        | undefined;
 
                                                 if (!classroom) {
                                                     return '—';
@@ -142,8 +153,11 @@ export default function Index({
                                             })()}
                                         </TableCell>
                                         <TableCell>
-                                            {(assignment.academic_year as AcademicYear | undefined)
-                                                ?.name ?? '—'}
+                                            {(
+                                                assignment.academic_year as
+                                                    | AcademicYear
+                                                    | undefined
+                                            )?.name ?? '—'}
                                         </TableCell>
                                         <TableCell>
                                             <Button
@@ -164,20 +178,29 @@ export default function Index({
                     </DataTableWrapper>
 
                     <div className="max-w-lg space-y-4">
-                        <h2 className="text-lg font-semibold">Tambah Penugasan</h2>
+                        <h2 className="text-lg font-semibold">
+                            Tambah Penugasan
+                        </h2>
                         <form onSubmit={submitStore} className="space-y-4">
                             <div>
-                                <Label htmlFor="academic_year_id">Tahun Ajaran</Label>
+                                <Label htmlFor="academic_year_id">
+                                    Tahun Ajaran
+                                </Label>
                                 <Select
                                     value={form.data.academic_year_id}
-                                    onValueChange={(v) => form.setData('academic_year_id', v)}
+                                    onValueChange={(v) =>
+                                        form.setData('academic_year_id', v)
+                                    }
                                 >
                                     <SelectTrigger id="academic_year_id">
                                         <SelectValue placeholder="Pilih tahun ajaran" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {academicYears.map((year) => (
-                                            <SelectItem key={year.id} value={String(year.id)}>
+                                            <SelectItem
+                                                key={year.id}
+                                                value={String(year.id)}
+                                            >
                                                 {year.name}
                                             </SelectItem>
                                         ))}
@@ -185,17 +208,24 @@ export default function Index({
                                 </Select>
                             </div>
                             <div>
-                                <Label htmlFor="subject_id">Mata Pelajaran</Label>
+                                <Label htmlFor="subject_id">
+                                    Mata Pelajaran
+                                </Label>
                                 <Select
                                     value={form.data.subject_id}
-                                    onValueChange={(v) => form.setData('subject_id', v)}
+                                    onValueChange={(v) =>
+                                        form.setData('subject_id', v)
+                                    }
                                 >
                                     <SelectTrigger id="subject_id">
                                         <SelectValue placeholder="Pilih mata pelajaran" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {subjects.map((subject) => (
-                                            <SelectItem key={subject.id} value={String(subject.id)}>
+                                            <SelectItem
+                                                key={subject.id}
+                                                value={String(subject.id)}
+                                            >
                                                 {subject.name}
                                             </SelectItem>
                                         ))}
@@ -206,14 +236,18 @@ export default function Index({
                                 <Label htmlFor="classroom_id">Kelas</Label>
                                 <Select
                                     value={form.data.classroom_id}
-                                    onValueChange={(v) => form.setData('classroom_id', v)}
+                                    onValueChange={(v) =>
+                                        form.setData('classroom_id', v)
+                                    }
                                 >
                                     <SelectTrigger id="classroom_id">
                                         <SelectValue placeholder="Pilih kelas" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {classrooms.map((classroom) => {
-                                            const grade = classroom.grade as Grade | undefined;
+                                            const grade = classroom.grade as
+                                                | Grade
+                                                | undefined;
 
                                             return (
                                                 <SelectItem
@@ -233,7 +267,9 @@ export default function Index({
                                 <Label htmlFor="user_id">Guru</Label>
                                 <Select
                                     value={form.data.user_id}
-                                    onValueChange={(v) => form.setData('user_id', v)}
+                                    onValueChange={(v) =>
+                                        form.setData('user_id', v)
+                                    }
                                 >
                                     <SelectTrigger id="user_id">
                                         <SelectValue placeholder="Pilih guru" />

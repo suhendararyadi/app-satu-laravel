@@ -61,7 +61,11 @@ export default function Index({ timeSlots }: Props) {
                         title="Jam Pelajaran"
                         action={
                             <Button asChild>
-                                <Link href={TimeSlotController.create.url(teamSlug)}>
+                                <Link
+                                    href={TimeSlotController.create.url(
+                                        teamSlug,
+                                    )}
+                                >
                                     Tambah Jam
                                 </Link>
                             </Button>
@@ -95,16 +99,25 @@ export default function Index({ timeSlots }: Props) {
                                 {timeSlots.map((slot) => (
                                     <TableRow key={slot.id}>
                                         <TableCell>{slot.sort_order}</TableCell>
-                                        <TableCell className="font-medium">{slot.name}</TableCell>
+                                        <TableCell className="font-medium">
+                                            {slot.name}
+                                        </TableCell>
                                         <TableCell>{slot.start_time}</TableCell>
                                         <TableCell>{slot.end_time}</TableCell>
                                         <TableCell className="space-x-2">
-                                            <Button size="sm" variant="outline" asChild>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                asChild
+                                            >
                                                 <Link
-                                                    href={TimeSlotController.edit.url({
-                                                        current_team: teamSlug,
-                                                        timeSlot: slot.id,
-                                                    })}
+                                                    href={TimeSlotController.edit.url(
+                                                        {
+                                                            current_team:
+                                                                teamSlug,
+                                                            timeSlot: slot.id,
+                                                        },
+                                                    )}
                                                 >
                                                     Edit
                                                 </Link>
@@ -112,7 +125,9 @@ export default function Index({ timeSlots }: Props) {
                                             <Button
                                                 size="sm"
                                                 variant="destructive"
-                                                onClick={() => handleDelete(slot.id)}
+                                                onClick={() =>
+                                                    handleDelete(slot.id)
+                                                }
                                             >
                                                 Hapus
                                             </Button>

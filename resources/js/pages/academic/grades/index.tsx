@@ -61,7 +61,9 @@ export default function Index({ grades }: Props) {
                         title="Tingkat Kelas"
                         action={
                             <Button asChild>
-                                <Link href={GradeController.create.url(teamSlug)}>
+                                <Link
+                                    href={GradeController.create.url(teamSlug)}
+                                >
                                     Tambah Tingkat
                                 </Link>
                             </Button>
@@ -97,12 +99,19 @@ export default function Index({ grades }: Props) {
                                         </TableCell>
                                         <TableCell>{grade.order}</TableCell>
                                         <TableCell className="space-x-2">
-                                            <Button size="sm" variant="outline" asChild>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                asChild
+                                            >
                                                 <Link
-                                                    href={GradeController.edit.url({
-                                                        current_team: teamSlug,
-                                                        grade: grade.id,
-                                                    })}
+                                                    href={GradeController.edit.url(
+                                                        {
+                                                            current_team:
+                                                                teamSlug,
+                                                            grade: grade.id,
+                                                        },
+                                                    )}
                                                 >
                                                     Edit
                                                 </Link>
@@ -110,7 +119,9 @@ export default function Index({ grades }: Props) {
                                             <Button
                                                 size="sm"
                                                 variant="destructive"
-                                                onClick={() => handleDelete(grade.id)}
+                                                onClick={() =>
+                                                    handleDelete(grade.id)
+                                                }
                                             >
                                                 Hapus
                                             </Button>

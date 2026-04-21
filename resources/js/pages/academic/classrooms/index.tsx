@@ -61,7 +61,11 @@ export default function Index({ classrooms }: Props) {
                         title="Kelas"
                         action={
                             <Button asChild>
-                                <Link href={ClassroomController.create.url(teamSlug)}>
+                                <Link
+                                    href={ClassroomController.create.url(
+                                        teamSlug,
+                                    )}
+                                >
                                     Tambah Kelas
                                 </Link>
                             </Button>
@@ -97,29 +101,52 @@ export default function Index({ classrooms }: Props) {
                                             {classroom.name}
                                         </TableCell>
                                         <TableCell>
-                                            {(classroom.grade as Grade | undefined)?.name ?? '—'}
+                                            {(
+                                                classroom.grade as
+                                                    | Grade
+                                                    | undefined
+                                            )?.name ?? '—'}
                                         </TableCell>
                                         <TableCell>
-                                            {(classroom.academic_year as AcademicYear | undefined)
-                                                ?.name ?? '—'}
+                                            {(
+                                                classroom.academic_year as
+                                                    | AcademicYear
+                                                    | undefined
+                                            )?.name ?? '—'}
                                         </TableCell>
                                         <TableCell className="space-x-2">
-                                            <Button size="sm" variant="outline" asChild>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                asChild
+                                            >
                                                 <Link
-                                                    href={ClassroomController.show.url({
-                                                        current_team: teamSlug,
-                                                        classroom: classroom.id,
-                                                    })}
+                                                    href={ClassroomController.show.url(
+                                                        {
+                                                            current_team:
+                                                                teamSlug,
+                                                            classroom:
+                                                                classroom.id,
+                                                        },
+                                                    )}
                                                 >
                                                     Detail
                                                 </Link>
                                             </Button>
-                                            <Button size="sm" variant="outline" asChild>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                asChild
+                                            >
                                                 <Link
-                                                    href={ClassroomController.edit.url({
-                                                        current_team: teamSlug,
-                                                        classroom: classroom.id,
-                                                    })}
+                                                    href={ClassroomController.edit.url(
+                                                        {
+                                                            current_team:
+                                                                teamSlug,
+                                                            classroom:
+                                                                classroom.id,
+                                                        },
+                                                    )}
                                                 >
                                                     Edit
                                                 </Link>
@@ -127,7 +154,9 @@ export default function Index({ classrooms }: Props) {
                                             <Button
                                                 size="sm"
                                                 variant="destructive"
-                                                onClick={() => handleDelete(classroom.id)}
+                                                onClick={() =>
+                                                    handleDelete(classroom.id)
+                                                }
                                             >
                                                 Hapus
                                             </Button>

@@ -62,7 +62,11 @@ export default function Index({ years }: Props) {
                         title="Tahun Ajaran"
                         action={
                             <Button asChild>
-                                <Link href={AcademicYearController.create.url(teamSlug)}>
+                                <Link
+                                    href={AcademicYearController.create.url(
+                                        teamSlug,
+                                    )}
+                                >
                                     Tambah Tahun Ajaran
                                 </Link>
                             </Button>
@@ -78,7 +82,9 @@ export default function Index({ years }: Props) {
                             description: 'Tambah tahun ajaran untuk memulai.',
                             action: {
                                 label: 'Tambah Tahun Ajaran',
-                                href: AcademicYearController.create.url(teamSlug),
+                                href: AcademicYearController.create.url(
+                                    teamSlug,
+                                ),
                             },
                         }}
                     >
@@ -95,18 +101,25 @@ export default function Index({ years }: Props) {
                             <TableBody>
                                 {years.map((year) => (
                                     <TableRow key={year.id}>
-                                        <TableCell className="font-medium">{year.name}</TableCell>
+                                        <TableCell className="font-medium">
+                                            {year.name}
+                                        </TableCell>
                                         <TableCell>
                                             {year.start_year}/{year.end_year}
                                         </TableCell>
                                         <TableCell>
-                                            {year.semesters?.length ?? 0} semester
+                                            {year.semesters?.length ?? 0}{' '}
+                                            semester
                                         </TableCell>
                                         <TableCell>
                                             {year.is_active ? (
-                                                <Badge variant="default">Aktif</Badge>
+                                                <Badge variant="default">
+                                                    Aktif
+                                                </Badge>
                                             ) : (
-                                                <Badge variant="secondary">Tidak Aktif</Badge>
+                                                <Badge variant="secondary">
+                                                    Tidak Aktif
+                                                </Badge>
                                             )}
                                         </TableCell>
                                         <TableCell className="space-x-2">
@@ -116,24 +129,36 @@ export default function Index({ years }: Props) {
                                                     variant="outline"
                                                     onClick={() =>
                                                         router.post(
-                                                            AcademicYearController.activate.url({
-                                                                current_team: teamSlug,
-                                                                year: year.id,
-                                                            }),
+                                                            AcademicYearController.activate.url(
+                                                                {
+                                                                    current_team:
+                                                                        teamSlug,
+                                                                    year: year.id,
+                                                                },
+                                                            ),
                                                             {},
-                                                            { preserveScroll: true },
+                                                            {
+                                                                preserveScroll: true,
+                                                            },
                                                         )
                                                     }
                                                 >
                                                     Aktifkan
                                                 </Button>
                                             )}
-                                            <Button size="sm" variant="outline" asChild>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                asChild
+                                            >
                                                 <Link
-                                                    href={AcademicYearController.edit.url({
-                                                        current_team: teamSlug,
-                                                        year: year.id,
-                                                    })}
+                                                    href={AcademicYearController.edit.url(
+                                                        {
+                                                            current_team:
+                                                                teamSlug,
+                                                            year: year.id,
+                                                        },
+                                                    )}
                                                 >
                                                     Edit
                                                 </Link>
@@ -141,7 +166,9 @@ export default function Index({ years }: Props) {
                                             <Button
                                                 size="sm"
                                                 variant="destructive"
-                                                onClick={() => handleDelete(year.id)}
+                                                onClick={() =>
+                                                    handleDelete(year.id)
+                                                }
                                             >
                                                 Hapus
                                             </Button>
