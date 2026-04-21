@@ -1,10 +1,15 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { UsersIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import StudentController from '@/actions/App/Http/Controllers/Students/StudentController';
 import StudentImportController from '@/actions/App/Http/Controllers/Students/StudentImportController';
 import ConfirmDeleteDialog from '@/components/confirm-delete-dialog';
+import DataTableWrapper from '@/components/data-table-wrapper';
+import PageHeader from '@/components/page-header';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Pagination } from '@/components/ui/pagination';
 import {
     Select,
     SelectContent,
@@ -40,36 +45,59 @@ interface ClassroomOption {
     name: string;
 }
 
-interface Props {
-    students: Student[];
-    classrooms: ClassroomOption[];
+interface PaginationMeta {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number | null;
+    to: number | null;
 }
 
-export default function StudentsIndex({ students, classrooms }: Props) {
+interface PaginatedStudents extends PaginationMeta {
+    data: Student[];
+}
+
+interface Props {
+    students: PaginatedStudents;
+    classrooms: ClassroomOption[];
+    filters: {
+        search: string;
+    };
+}
+
+export default function StudentsIndex({ students, classrooms, filters }: Props) {
     const { currentTeam } = usePage().props;
     const teamSlug = (currentTeam as { slug: string } | null)?.slug ?? '';
 
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [deleteId, setDeleteId] = useState<number | null>(null);
-    const [classroomFilter, setClassroomFilter] = useState<string>('all');
+    const [search, setSearch] = useState(filters.search ?? '');
+    const [loading, setLoading] = useState(false);
 
-    const filtered =
-        classroomFilter === 'all'
-            ? students
-            : students.filter((s) =>
-                  s.classrooms.some((c) => String(c.id) === classroomFilter),
-              );
+    // Debounce search
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (search !== filters.search) {
+                setLoading(true);
+                router.get(
+                    StudentController.index.url(teamSlug),
+                    { search: search || undefined },
+                    {
+                        preserveState: true,
+                        preserveScroll: true,
+                        onFinish: () => setLoading(false),
+                    },
+                );
+            }
+        }, 350);
+        return () => clearTimeout(timer);
+    }, [search]);
 
     function confirmDelete() {
-        if (!deleteId) {
-            return;
-        }
-
+        if (!deleteId) return;
         router.delete(
-            StudentController.destroy.url({
-                current_team: teamSlug,
-                user: deleteId,
-            }),
+            StudentController.destroy.url({ current_team: teamSlug, user: deleteId }),
             {
                 preserveScroll: true,
                 onFinish: () => {
@@ -85,34 +113,25 @@ export default function StudentsIndex({ students, classrooms }: Props) {
             <Head title="Manajemen Siswa" />
             <div className="px-4 py-6">
                 <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-2xl font-bold">
-                                Manajemen Siswa
-                            </h1>
-                            <p className="text-sm text-muted-foreground">
-                                {students.length} siswa terdaftar
-                            </p>
-                        </div>
-                        <Button asChild>
-                            <Link
-                                href={StudentImportController.create.url(
-                                    teamSlug,
-                                )}
-                            >
-                                Import Siswa
-                            </Link>
-                        </Button>
-                    </div>
+                    <PageHeader
+                        title="Manajemen Siswa"
+                        action={
+                            <Button asChild>
+                                <Link href={StudentImportController.create.url(teamSlug)}>
+                                    Import Siswa
+                                </Link>
+                            </Button>
+                        }
+                    />
 
                     <div className="flex items-center gap-3">
-                        <span className="text-sm text-muted-foreground">
-                            Filter kelas:
-                        </span>
-                        <Select
-                            value={classroomFilter}
-                            onValueChange={setClassroomFilter}
-                        >
+                        <Input
+                            placeholder="Cari nama atau email..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="max-w-xs"
+                        />
+                        <Select defaultValue="all">
                             <SelectTrigger className="w-48">
                                 <SelectValue placeholder="Semua kelas" />
                             </SelectTrigger>
@@ -127,58 +146,68 @@ export default function StudentsIndex({ students, classrooms }: Props) {
                         </Select>
                     </div>
 
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Nama</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Kelas</TableHead>
-                                <TableHead>NIS</TableHead>
-                                <TableHead className="w-24">Aksi</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {filtered.map((student) => (
-                                <TableRow key={student.id}>
-                                    <TableCell>{student.name}</TableCell>
-                                    <TableCell className="text-muted-foreground">
-                                        {student.email}
-                                    </TableCell>
-                                    <TableCell>
-                                        {student.classrooms.length > 0
-                                            ? student.classrooms
-                                                  .map((c) => c.name)
-                                                  .join(', ')
-                                            : '—'}
-                                    </TableCell>
-                                    <TableCell>
-                                        {student.classrooms.length > 0
-                                            ? (student.classrooms[0]
-                                                  .student_number ?? '—')
-                                            : '—'}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button
-                                            size="sm"
-                                            variant="destructive"
-                                            onClick={() => {
-                                                setDeleteId(student.id);
-                                                setConfirmOpen(true);
-                                            }}
-                                        >
-                                            Hapus
-                                        </Button>
-                                    </TableCell>
+                    <DataTableWrapper
+                        loading={loading}
+                        isEmpty={students.data.length === 0}
+                        emptyState={{
+                            icon: UsersIcon,
+                            title: 'Belum ada siswa',
+                            description: 'Import data siswa untuk mulai mengelola kelas.',
+                            action: {
+                                label: 'Import Siswa',
+                                href: StudentImportController.create.url(teamSlug),
+                            },
+                        }}
+                    >
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Nama</TableHead>
+                                    <TableHead>Email</TableHead>
+                                    <TableHead>Kelas</TableHead>
+                                    <TableHead>NIS</TableHead>
+                                    <TableHead className="w-24">Aksi</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {students.data.map((student) => (
+                                    <TableRow key={student.id}>
+                                        <TableCell>{student.name}</TableCell>
+                                        <TableCell className="text-muted-foreground">
+                                            {student.email}
+                                        </TableCell>
+                                        <TableCell>
+                                            {student.classrooms.length > 0
+                                                ? student.classrooms.map((c) => c.name).join(', ')
+                                                : '—'}
+                                        </TableCell>
+                                        <TableCell>
+                                            {student.classrooms.length > 0
+                                                ? (student.classrooms[0].student_number ?? '—')
+                                                : '—'}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button
+                                                size="sm"
+                                                variant="destructive"
+                                                onClick={() => {
+                                                    setDeleteId(student.id);
+                                                    setConfirmOpen(true);
+                                                }}
+                                            >
+                                                Hapus
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </DataTableWrapper>
 
-                    {filtered.length === 0 && (
-                        <p className="py-8 text-center text-sm text-muted-foreground">
-                            Tidak ada siswa ditemukan.
-                        </p>
-                    )}
+                    <Pagination
+                        meta={students}
+                        preserveParams={{ search: search || undefined }}
+                    />
                 </div>
             </div>
 
