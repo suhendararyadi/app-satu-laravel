@@ -16,6 +16,7 @@ import {
     LayoutGrid,
     Newspaper,
     School,
+    UserCheck,
     Users,
 } from 'lucide-react';
 import AcademicYearController from '@/actions/App/Http/Controllers/Academic/AcademicYearController';
@@ -30,6 +31,7 @@ import AttendanceController from '@/actions/App/Http/Controllers/Schedule/Attend
 import ScheduleController from '@/actions/App/Http/Controllers/Schedule/ScheduleController';
 import TimeSlotController from '@/actions/App/Http/Controllers/Schedule/TimeSlotController';
 import SchoolProfileController from '@/actions/App/Http/Controllers/School/SchoolProfileController';
+import StudentController from '@/actions/App/Http/Controllers/Students/StudentController';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavGroups } from '@/components/nav-groups';
@@ -100,6 +102,11 @@ export function AppSidebar() {
                         ? TeacherAssignmentController.index.url(slug)
                         : '/',
                     icon: ClipboardList,
+                },
+                {
+                    title: 'Siswa',
+                    href: slug ? StudentController.index.url(slug) : '/',
+                    icon: UserCheck,
                 },
             ],
         },
