@@ -56,7 +56,8 @@ it('imports students from uploaded excel', function () {
 
     $this->actingAs($owner)
         ->post(route('students.import.store'), ['file' => $file])
-        ->assertRedirect(route('students.import'));
+        ->assertRedirect(route('students.import'))
+        ->assertSessionHas('import_result');
 
     Excel::assertImported('students.xlsx');
 });

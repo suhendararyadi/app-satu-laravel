@@ -26,12 +26,20 @@ class StudentImportController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $team = $request->user()->currentTeam;
+
         $request->validate([
             'file' => ['required', 'file', 'mimes:xlsx,xls,csv', 'max:5120'],
-            'classroom_id' => ['nullable', 'integer'],
+            'classroom_id' => [
+                'nullable',
+                'integer',
+                function (string $attribute, mixed $value, \Closure $fail) use ($team) {
+                    if ($value !== null && ! $team->classrooms()->where('id', $value)->exists()) {
+                        $fail('Kelas tidak valid.');
+                    }
+                },
+            ],
         ]);
-
-        $team = $request->user()->currentTeam;
         $classroomId = $request->integer('classroom_id') ?: null;
 
         $import = new StudentImport($team, $classroomId);
