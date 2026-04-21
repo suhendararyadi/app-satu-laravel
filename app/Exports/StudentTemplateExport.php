@@ -2,26 +2,27 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithHeadings;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-class StudentTemplateExport implements FromArray, WithHeadings
+class StudentTemplateExport
 {
-    /**
-     * @return array<int, array<int, string>>
-     */
-    public function array(): array
+    public function download(): BinaryFileResponse
     {
-        return [
+        $spreadsheet = new Spreadsheet;
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->fromArray([
+            ['Nama', 'Email', 'NIS'],
             ['Budi Santoso', 'budi@contoh.com', '12345'],
-        ];
-    }
+        ]);
 
-    /**
-     * @return array<int, string>
-     */
-    public function headings(): array
-    {
-        return ['Nama', 'Email', 'NIS'];
+        $temp = tempnam(sys_get_temp_dir(), 'xlsx');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($temp);
+
+        return response()->download($temp, 'template-import-siswa.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ])->deleteFileAfterSend();
     }
 }

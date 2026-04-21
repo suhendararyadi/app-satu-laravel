@@ -11,10 +11,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
-class StudentImport implements ToCollection, WithHeadingRow
+class StudentImport
 {
     /** @var array{imported: int, skipped: int, errors: string[]} */
     private array $result = ['imported' => 0, 'skipped' => 0, 'errors' => []];
@@ -23,6 +22,25 @@ class StudentImport implements ToCollection, WithHeadingRow
         private readonly Team $team,
         private readonly ?int $classroomId = null,
     ) {}
+
+    public function importFromFile(string $filePath): void
+    {
+        $spreadsheet = IOFactory::load($filePath);
+        $rows = $spreadsheet->getActiveSheet()->toArray(null, true, true, false);
+
+        if (count($rows) < 2) {
+            return;
+        }
+
+        /** @var array<int, string|null> $rawHeaders */
+        $rawHeaders = $rows[0];
+        $headers = array_map(fn ($h) => mb_strtolower((string) ($h ?? '')), $rawHeaders);
+
+        $data = collect(array_slice($rows, 1))
+            ->map(fn ($row) => collect(array_combine($headers, $row)));
+
+        $this->collection($data);
+    }
 
     /**
      * @param  Collection<int, Collection<string, mixed>>  $rows

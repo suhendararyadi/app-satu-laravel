@@ -10,7 +10,8 @@ use App\Models\User;
 use App\Notifications\Students\WelcomeStudent;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
-use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 beforeEach(function () {
     $this->withoutVite();
@@ -24,6 +25,28 @@ function makeImportSetup(): array
     $owner->switchTeam($team);
 
     return [$owner, $team];
+}
+
+/**
+ * Build a minimal xlsx UploadedFile with the given rows (first row = headers).
+ *
+ * @param  array<int, array<int, string>>  $rows
+ */
+function makeXlsxUpload(array $rows, string $name = 'students.xlsx'): UploadedFile
+{
+    $spreadsheet = new Spreadsheet;
+    $spreadsheet->getActiveSheet()->fromArray($rows);
+    $writer = new Xlsx($spreadsheet);
+    $temp = tempnam(sys_get_temp_dir(), 'xlsx');
+    $writer->save($temp);
+
+    return new UploadedFile(
+        $temp,
+        $name,
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        null,
+        true,
+    );
 }
 
 it('shows the import form page', function () {
@@ -41,29 +64,29 @@ it('shows the import form page', function () {
 it('downloads import template', function () {
     [$owner] = makeImportSetup();
 
-    Excel::fake();
-
     $this->actingAs($owner)
         ->get(route('students.import.template'))
-        ->assertOk();
-
-    Excel::assertDownloaded('template-import-siswa.xlsx');
+        ->assertOk()
+        ->assertDownload('template-import-siswa.xlsx');
 });
 
 it('imports students from uploaded excel', function () {
     [$owner, $team] = makeImportSetup();
 
     Notification::fake();
-    Excel::fake();
 
-    $file = UploadedFile::fake()->create('students.xlsx', 10, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    $file = makeXlsxUpload([
+        ['Nama', 'Email', 'NIS'],
+        ['Siswa Satu', 'siswa1@test.com', '001'],
+    ]);
 
     $this->actingAs($owner)
         ->post(route('students.import.store'), ['file' => $file])
         ->assertRedirect(route('students.import'))
         ->assertSessionHas('import_result');
 
-    Excel::assertImported('students.xlsx');
+    expect(User::where('email', 'siswa1@test.com')->exists())->toBeTrue();
+    expect($team->members()->where('users.email', 'siswa1@test.com')->exists())->toBeTrue();
 });
 
 it('import requires a file', function () {

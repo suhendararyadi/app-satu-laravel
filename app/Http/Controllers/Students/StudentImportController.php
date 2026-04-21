@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class StudentImportController extends Controller
@@ -43,7 +42,7 @@ class StudentImportController extends Controller
         $classroomId = $request->integer('classroom_id') ?: null;
 
         $import = new StudentImport($team, $classroomId);
-        Excel::import($import, $request->file('file'));
+        $import->importFromFile($request->file('file')->getRealPath());
         $result = $import->getResult();
 
         return redirect()
@@ -53,6 +52,6 @@ class StudentImportController extends Controller
 
     public function template(): BinaryFileResponse
     {
-        return Excel::download(new StudentTemplateExport, 'template-import-siswa.xlsx');
+        return (new StudentTemplateExport)->download();
     }
 }
