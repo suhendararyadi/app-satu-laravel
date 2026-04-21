@@ -1,8 +1,11 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
+    AlarmClock,
     BookOpen,
     BookOpenCheck,
     Calendar,
+    CalendarDays,
+    ClipboardCheck,
     ClipboardList,
     FileText,
     FolderGit2,
@@ -23,6 +26,9 @@ import TeacherAssignmentController from '@/actions/App/Http/Controllers/Academic
 import GalleryController from '@/actions/App/Http/Controllers/CMS/GalleryController';
 import PageController from '@/actions/App/Http/Controllers/CMS/PageController';
 import PostController from '@/actions/App/Http/Controllers/CMS/PostController';
+import AttendanceController from '@/actions/App/Http/Controllers/Schedule/AttendanceController';
+import ScheduleController from '@/actions/App/Http/Controllers/Schedule/ScheduleController';
+import TimeSlotController from '@/actions/App/Http/Controllers/Schedule/TimeSlotController';
 import SchoolProfileController from '@/actions/App/Http/Controllers/School/SchoolProfileController';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -99,6 +105,30 @@ export function AppSidebar() {
         },
     ];
 
+    const scheduleNavGroups: NavGroup[] = [
+        {
+            title: 'Jadwal & Absensi',
+            icon: CalendarDays,
+            items: [
+                {
+                    title: 'Jam Pelajaran',
+                    href: slug ? TimeSlotController.index.url(slug) : '/',
+                    icon: AlarmClock,
+                },
+                {
+                    title: 'Jadwal',
+                    href: slug ? ScheduleController.index.url(slug) : '/',
+                    icon: CalendarDays,
+                },
+                {
+                    title: 'Absensi',
+                    href: slug ? AttendanceController.index.url(slug) : '/',
+                    icon: ClipboardCheck,
+                },
+            ],
+        },
+    ];
+
     const cmsNavGroups: NavGroup[] = [
         {
             title: 'Manajemen Konten',
@@ -160,6 +190,10 @@ export function AppSidebar() {
                 <NavMain items={schoolNavItems} label="Sekolah" />
                 <NavGroups groups={cmsNavGroups} label="Konten" />
                 <NavGroups groups={academicNavGroups} label="Akademik" />
+                <NavGroups
+                    groups={scheduleNavGroups}
+                    label="Jadwal & Absensi"
+                />
             </SidebarContent>
 
             <SidebarFooter>

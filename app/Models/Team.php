@@ -10,6 +10,7 @@ use App\Models\Academic\Classroom;
 use App\Models\Academic\Grade;
 use App\Models\Academic\Subject;
 use App\Models\Academic\TeacherAssignment;
+use App\Models\Schedule\TimeSlot;
 use Database\Factories\TeamFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -207,5 +208,13 @@ class Team extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    /**
+     * @return HasMany<TimeSlot, $this>
+     */
+    public function timeSlots(): HasMany
+    {
+        return $this->hasMany(TimeSlot::class);
     }
 }

@@ -22,4 +22,9 @@ class StudentEnrollment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
