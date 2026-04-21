@@ -65,7 +65,7 @@ export function Pagination({ meta, preserveParams = {}, className }: Props) {
                 </Button>
                 {pages.map((p, i) =>
                     p === '...' ? (
-                        <span key={`ellipsis-${i}`} className="px-1">
+                        <span key={i === 1 ? 'ellipsis-left' : 'ellipsis-right'} className="px-1">
                             <MoreHorizontalIcon className="size-4 text-muted-foreground" />
                         </span>
                     ) : (

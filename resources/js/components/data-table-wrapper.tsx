@@ -1,5 +1,5 @@
 // resources/js/components/data-table-wrapper.tsx
-import { useRef, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import EmptyState from '@/components/empty-state';
 import { Spinner } from '@/components/ui/spinner';
@@ -25,9 +25,6 @@ export default function DataTableWrapper({
     emptyState,
     children,
 }: Props) {
-    const loadingRef = useRef(loading);
-    loadingRef.current = loading;
-
     if (isEmpty && !loading) {
         return <EmptyState {...emptyState} />;
     }
