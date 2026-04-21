@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use App\Notifications\Students\WelcomeStudent;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -47,22 +48,26 @@ class StudentImport implements ToCollection, WithHeadingRow
 
             $temporaryPassword = Str::random(12);
 
-            $user = User::create([
-                'name' => $name ?: $email,
-                'email' => $email,
-                'password' => bcrypt($temporaryPassword),
-                'email_verified_at' => now(),
-            ]);
-
-            $this->team->members()->attach($user->id, ['role' => TeamRole::Student->value]);
-
-            if ($this->classroomId !== null) {
-                StudentEnrollment::create([
-                    'classroom_id' => $this->classroomId,
-                    'user_id' => $user->id,
-                    'student_number' => $nis,
+            $user = DB::transaction(function () use ($email, $name, $temporaryPassword, $nis) {
+                $user = User::create([
+                    'name' => $name ?: $email,
+                    'email' => $email,
+                    'password' => $temporaryPassword,
+                    'email_verified_at' => now(),
                 ]);
-            }
+
+                $this->team->members()->attach($user->id, ['role' => TeamRole::Student->value]);
+
+                if ($this->classroomId !== null) {
+                    StudentEnrollment::create([
+                        'classroom_id' => $this->classroomId,
+                        'user_id' => $user->id,
+                        'student_number' => $nis,
+                    ]);
+                }
+
+                return $user;
+            });
 
             Notification::send($user, new WelcomeStudent($this->team, $temporaryPassword));
 
