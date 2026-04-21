@@ -60,7 +60,7 @@ it('students index only lists role=student members', function () {
         ->get(route('students.index'))
         ->assertOk()
         ->assertInertia(fn ($page) => $page
-            ->has('students', 1)
+            ->has('students.data', 1)
         );
 });
 

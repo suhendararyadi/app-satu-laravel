@@ -66,7 +66,11 @@ interface Props {
     };
 }
 
-export default function StudentsIndex({ students, classrooms, filters }: Props) {
+export default function StudentsIndex({
+    students,
+    classrooms,
+    filters,
+}: Props) {
     const { currentTeam } = usePage().props;
     const teamSlug = (currentTeam as { slug: string } | null)?.slug ?? '';
 
@@ -91,13 +95,20 @@ export default function StudentsIndex({ students, classrooms, filters }: Props) 
                 );
             }
         }, 350);
+
         return () => clearTimeout(timer);
     }, [search]);
 
     function confirmDelete() {
-        if (!deleteId) return;
+        if (!deleteId) {
+            return;
+        }
+
         router.delete(
-            StudentController.destroy.url({ current_team: teamSlug, user: deleteId }),
+            StudentController.destroy.url({
+                current_team: teamSlug,
+                user: deleteId,
+            }),
             {
                 preserveScroll: true,
                 onFinish: () => {
@@ -117,7 +128,11 @@ export default function StudentsIndex({ students, classrooms, filters }: Props) 
                         title="Manajemen Siswa"
                         action={
                             <Button asChild>
-                                <Link href={StudentImportController.create.url(teamSlug)}>
+                                <Link
+                                    href={StudentImportController.create.url(
+                                        teamSlug,
+                                    )}
+                                >
                                     Import Siswa
                                 </Link>
                             </Button>
@@ -152,10 +167,13 @@ export default function StudentsIndex({ students, classrooms, filters }: Props) 
                         emptyState={{
                             icon: UsersIcon,
                             title: 'Belum ada siswa',
-                            description: 'Import data siswa untuk mulai mengelola kelas.',
+                            description:
+                                'Import data siswa untuk mulai mengelola kelas.',
                             action: {
                                 label: 'Import Siswa',
-                                href: StudentImportController.create.url(teamSlug),
+                                href: StudentImportController.create.url(
+                                    teamSlug,
+                                ),
                             },
                         }}
                     >
@@ -178,12 +196,15 @@ export default function StudentsIndex({ students, classrooms, filters }: Props) 
                                         </TableCell>
                                         <TableCell>
                                             {student.classrooms.length > 0
-                                                ? student.classrooms.map((c) => c.name).join(', ')
+                                                ? student.classrooms
+                                                      .map((c) => c.name)
+                                                      .join(', ')
                                                 : '—'}
                                         </TableCell>
                                         <TableCell>
                                             {student.classrooms.length > 0
-                                                ? (student.classrooms[0].student_number ?? '—')
+                                                ? (student.classrooms[0]
+                                                      .student_number ?? '—')
                                                 : '—'}
                                         </TableCell>
                                         <TableCell>
