@@ -1,7 +1,11 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { CalendarIcon } from 'lucide-react';
 import { useState } from 'react';
+
 import AcademicYearController from '@/actions/App/Http/Controllers/Academic/AcademicYearController';
 import ConfirmDeleteDialog from '@/components/confirm-delete-dialog';
+import DataTableWrapper from '@/components/data-table-wrapper';
+import PageHeader from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -53,107 +57,100 @@ export default function Index({ years }: Props) {
         <>
             <Head title="Tahun Ajaran" />
             <div className="px-4 py-6">
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h1 className="text-2xl font-bold">Tahun Ajaran</h1>
-                        <Button asChild>
-                            <Link
-                                href={AcademicYearController.create.url(
-                                    teamSlug,
-                                )}
-                            >
-                                Tambah Tahun Ajaran
-                            </Link>
-                        </Button>
-                    </div>
+                <div className="space-y-6">
+                    <PageHeader
+                        title="Tahun Ajaran"
+                        action={
+                            <Button asChild>
+                                <Link href={AcademicYearController.create.url(teamSlug)}>
+                                    Tambah Tahun Ajaran
+                                </Link>
+                            </Button>
+                        }
+                    />
 
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Nama</TableHead>
-                                <TableHead>Tahun</TableHead>
-                                <TableHead>Semester</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="w-48">Aksi</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {years.map((year) => (
-                                <TableRow key={year.id}>
-                                    <TableCell className="font-medium">
-                                        {year.name}
-                                    </TableCell>
-                                    <TableCell>
-                                        {year.start_year}/{year.end_year}
-                                    </TableCell>
-                                    <TableCell>
-                                        {year.semesters?.length ?? 0} semester
-                                    </TableCell>
-                                    <TableCell>
-                                        {year.is_active ? (
-                                            <Badge variant="default">
-                                                Aktif
-                                            </Badge>
-                                        ) : (
-                                            <Badge variant="secondary">
-                                                Tidak Aktif
-                                            </Badge>
-                                        )}
-                                    </TableCell>
-                                    <TableCell className="space-x-2">
-                                        {!year.is_active && (
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() =>
-                                                    router.post(
-                                                        AcademicYearController.activate.url(
-                                                            {
-                                                                current_team:
-                                                                    teamSlug,
+                    <DataTableWrapper
+                        loading={false}
+                        isEmpty={years.length === 0}
+                        emptyState={{
+                            icon: CalendarIcon,
+                            title: 'Belum ada tahun ajaran',
+                            description: 'Tambah tahun ajaran untuk memulai.',
+                            action: {
+                                label: 'Tambah Tahun Ajaran',
+                                href: AcademicYearController.create.url(teamSlug),
+                            },
+                        }}
+                    >
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Nama</TableHead>
+                                    <TableHead>Tahun</TableHead>
+                                    <TableHead>Semester</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead className="w-48">Aksi</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {years.map((year) => (
+                                    <TableRow key={year.id}>
+                                        <TableCell className="font-medium">{year.name}</TableCell>
+                                        <TableCell>
+                                            {year.start_year}/{year.end_year}
+                                        </TableCell>
+                                        <TableCell>
+                                            {year.semesters?.length ?? 0} semester
+                                        </TableCell>
+                                        <TableCell>
+                                            {year.is_active ? (
+                                                <Badge variant="default">Aktif</Badge>
+                                            ) : (
+                                                <Badge variant="secondary">Tidak Aktif</Badge>
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="space-x-2">
+                                            {!year.is_active && (
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() =>
+                                                        router.post(
+                                                            AcademicYearController.activate.url({
+                                                                current_team: teamSlug,
                                                                 year: year.id,
-                                                            },
-                                                        ),
-                                                        {},
-                                                        {
-                                                            preserveScroll: true,
-                                                        },
-                                                    )
-                                                }
-                                            >
-                                                Aktifkan
-                                            </Button>
-                                        )}
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            asChild
-                                        >
-                                            <Link
-                                                href={AcademicYearController.edit.url(
-                                                    {
+                                                            }),
+                                                            {},
+                                                            { preserveScroll: true },
+                                                        )
+                                                    }
+                                                >
+                                                    Aktifkan
+                                                </Button>
+                                            )}
+                                            <Button size="sm" variant="outline" asChild>
+                                                <Link
+                                                    href={AcademicYearController.edit.url({
                                                         current_team: teamSlug,
                                                         year: year.id,
-                                                    },
-                                                )}
+                                                    })}
+                                                >
+                                                    Edit
+                                                </Link>
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                variant="destructive"
+                                                onClick={() => handleDelete(year.id)}
                                             >
-                                                Edit
-                                            </Link>
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="destructive"
-                                            onClick={() =>
-                                                handleDelete(year.id)
-                                            }
-                                        >
-                                            Hapus
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                                                Hapus
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </DataTableWrapper>
 
                     <ConfirmDeleteDialog
                         open={confirmOpen}

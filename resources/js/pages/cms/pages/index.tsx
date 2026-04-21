@@ -1,10 +1,21 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { FileTextIcon } from 'lucide-react';
 import { useState } from 'react';
+
 import PageController from '@/actions/App/Http/Controllers/CMS/PageController';
 import ConfirmDeleteDialog from '@/components/confirm-delete-dialog';
-import Heading from '@/components/heading';
+import DataTableWrapper from '@/components/data-table-wrapper';
+import PageHeader from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import type { Page } from '@/types/school';
 
 interface Props {
@@ -48,106 +59,85 @@ export default function CmsPagesIndex({ pages }: Props) {
             <Head title="Halaman CMS" />
 
             <div className="px-4 py-6">
-                <div className="flex items-center justify-between">
-                    <Heading
+                <div className="space-y-6">
+                    <PageHeader
                         title="Halaman"
                         description="Kelola halaman statis website sekolah"
+                        action={
+                            <Button asChild>
+                                <Link href={PageController.create.url(teamSlug)}>
+                                    Tambah Halaman
+                                </Link>
+                            </Button>
+                        }
                     />
-                    <Button asChild>
-                        <Link href={PageController.create.url(teamSlug)}>
-                            Tambah Halaman
-                        </Link>
-                    </Button>
-                </div>
 
-                <div className="mt-6 overflow-hidden rounded-md border">
-                    <table className="w-full text-sm">
-                        <thead className="bg-muted text-muted-foreground">
-                            <tr>
-                                <th className="px-4 py-3 text-left font-medium">
-                                    Judul
-                                </th>
-                                <th className="px-4 py-3 text-left font-medium">
-                                    Slug
-                                </th>
-                                <th className="px-4 py-3 text-left font-medium">
-                                    Status
-                                </th>
-                                <th className="px-4 py-3 text-left font-medium">
-                                    Urutan
-                                </th>
-                                <th className="px-4 py-3 text-left font-medium">
-                                    Aksi
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y">
-                            {pages.length === 0 && (
-                                <tr>
-                                    <td
-                                        colSpan={5}
-                                        className="px-4 py-6 text-center text-muted-foreground"
-                                    >
-                                        Belum ada halaman.
-                                    </td>
-                                </tr>
-                            )}
-                            {pages.map((page) => (
-                                <tr key={page.id} className="hover:bg-muted/50">
-                                    <td className="px-4 py-3 font-medium">
-                                        {page.title}
-                                    </td>
-                                    <td className="px-4 py-3 text-muted-foreground">
-                                        {page.slug}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        {page.is_published ? (
-                                            <Badge variant="default">
-                                                Terbit
-                                            </Badge>
-                                        ) : (
-                                            <Badge variant="secondary">
-                                                Draft
-                                            </Badge>
-                                        )}
-                                    </td>
-                                    <td className="px-4 py-3 text-muted-foreground">
-                                        {page.sort_order}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                        <div className="flex items-center gap-2">
-                                            <Button
-                                                asChild
-                                                size="sm"
-                                                variant="outline"
-                                            >
-                                                <Link
-                                                    href={PageController.edit.url(
-                                                        {
-                                                            current_team:
-                                                                teamSlug,
+                    <DataTableWrapper
+                        loading={false}
+                        isEmpty={pages.length === 0}
+                        emptyState={{
+                            icon: FileTextIcon,
+                            title: 'Belum ada halaman',
+                            description: 'Tambah halaman statis pertama untuk website sekolah.',
+                            action: {
+                                label: 'Tambah Halaman',
+                                href: PageController.create.url(teamSlug),
+                            },
+                        }}
+                    >
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Judul</TableHead>
+                                    <TableHead>Slug</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Urutan</TableHead>
+                                    <TableHead>Aksi</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {pages.map((page) => (
+                                    <TableRow key={page.id}>
+                                        <TableCell className="font-medium">{page.title}</TableCell>
+                                        <TableCell className="text-muted-foreground">
+                                            {page.slug}
+                                        </TableCell>
+                                        <TableCell>
+                                            {page.is_published ? (
+                                                <Badge variant="default">Terbit</Badge>
+                                            ) : (
+                                                <Badge variant="secondary">Draft</Badge>
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="text-muted-foreground">
+                                            {page.sort_order}
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                <Button asChild size="sm" variant="outline">
+                                                    <Link
+                                                        href={PageController.edit.url({
+                                                            current_team: teamSlug,
                                                             page: page.id,
-                                                        },
-                                                    )}
+                                                        })}
+                                                    >
+                                                        Edit
+                                                    </Link>
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="destructive"
+                                                    onClick={() => handleDelete(page)}
                                                 >
-                                                    Edit
-                                                </Link>
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="destructive"
-                                                onClick={() =>
-                                                    handleDelete(page)
-                                                }
-                                            >
-                                                Hapus
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                                    Hapus
+                                                </Button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </DataTableWrapper>
                 </div>
             </div>
 

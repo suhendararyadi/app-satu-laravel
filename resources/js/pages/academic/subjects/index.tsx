@@ -1,7 +1,11 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { BookOpenIcon } from 'lucide-react';
 import { useState } from 'react';
+
 import SubjectController from '@/actions/App/Http/Controllers/Academic/SubjectController';
 import ConfirmDeleteDialog from '@/components/confirm-delete-dialog';
+import DataTableWrapper from '@/components/data-table-wrapper';
+import PageHeader from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import {
     Table,
@@ -52,62 +56,70 @@ export default function Index({ subjects }: Props) {
         <>
             <Head title="Mata Pelajaran" />
             <div className="px-4 py-6">
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h1 className="text-2xl font-bold">Mata Pelajaran</h1>
-                        <Button asChild>
-                            <Link href={SubjectController.create.url(teamSlug)}>
-                                Tambah Mata Pelajaran
-                            </Link>
-                        </Button>
-                    </div>
+                <div className="space-y-6">
+                    <PageHeader
+                        title="Mata Pelajaran"
+                        action={
+                            <Button asChild>
+                                <Link href={SubjectController.create.url(teamSlug)}>
+                                    Tambah Mata Pelajaran
+                                </Link>
+                            </Button>
+                        }
+                    />
 
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Nama</TableHead>
-                                <TableHead>Kode</TableHead>
-                                <TableHead className="w-32">Aksi</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {subjects.map((subject) => (
-                                <TableRow key={subject.id}>
-                                    <TableCell className="font-medium">
-                                        {subject.name}
-                                    </TableCell>
-                                    <TableCell>{subject.code ?? '—'}</TableCell>
-                                    <TableCell className="space-x-2">
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            asChild
-                                        >
-                                            <Link
-                                                href={SubjectController.edit.url(
-                                                    {
+                    <DataTableWrapper
+                        loading={false}
+                        isEmpty={subjects.length === 0}
+                        emptyState={{
+                            icon: BookOpenIcon,
+                            title: 'Belum ada mata pelajaran',
+                            description: 'Tambah mata pelajaran untuk memulai.',
+                            action: {
+                                label: 'Tambah Mata Pelajaran',
+                                href: SubjectController.create.url(teamSlug),
+                            },
+                        }}
+                    >
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Nama</TableHead>
+                                    <TableHead>Kode</TableHead>
+                                    <TableHead className="w-32">Aksi</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {subjects.map((subject) => (
+                                    <TableRow key={subject.id}>
+                                        <TableCell className="font-medium">
+                                            {subject.name}
+                                        </TableCell>
+                                        <TableCell>{subject.code ?? '—'}</TableCell>
+                                        <TableCell className="space-x-2">
+                                            <Button size="sm" variant="outline" asChild>
+                                                <Link
+                                                    href={SubjectController.edit.url({
                                                         current_team: teamSlug,
                                                         subject: subject.id,
-                                                    },
-                                                )}
+                                                    })}
+                                                >
+                                                    Edit
+                                                </Link>
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                variant="destructive"
+                                                onClick={() => handleDelete(subject.id)}
                                             >
-                                                Edit
-                                            </Link>
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="destructive"
-                                            onClick={() =>
-                                                handleDelete(subject.id)
-                                            }
-                                        >
-                                            Hapus
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                                                Hapus
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </DataTableWrapper>
 
                     <ConfirmDeleteDialog
                         open={confirmOpen}

@@ -1,7 +1,11 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { LayersIcon } from 'lucide-react';
 import { useState } from 'react';
+
 import GradeController from '@/actions/App/Http/Controllers/Academic/GradeController';
 import ConfirmDeleteDialog from '@/components/confirm-delete-dialog';
+import DataTableWrapper from '@/components/data-table-wrapper';
+import PageHeader from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import {
     Table,
@@ -52,60 +56,70 @@ export default function Index({ grades }: Props) {
         <>
             <Head title="Tingkat Kelas" />
             <div className="px-4 py-6">
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h1 className="text-2xl font-bold">Tingkat Kelas</h1>
-                        <Button asChild>
-                            <Link href={GradeController.create.url(teamSlug)}>
-                                Tambah Tingkat
-                            </Link>
-                        </Button>
-                    </div>
+                <div className="space-y-6">
+                    <PageHeader
+                        title="Tingkat Kelas"
+                        action={
+                            <Button asChild>
+                                <Link href={GradeController.create.url(teamSlug)}>
+                                    Tambah Tingkat
+                                </Link>
+                            </Button>
+                        }
+                    />
 
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Nama</TableHead>
-                                <TableHead>Urutan</TableHead>
-                                <TableHead className="w-32">Aksi</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {grades.map((grade) => (
-                                <TableRow key={grade.id}>
-                                    <TableCell className="font-medium">
-                                        {grade.name}
-                                    </TableCell>
-                                    <TableCell>{grade.order}</TableCell>
-                                    <TableCell className="space-x-2">
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            asChild
-                                        >
-                                            <Link
-                                                href={GradeController.edit.url({
-                                                    current_team: teamSlug,
-                                                    grade: grade.id,
-                                                })}
-                                            >
-                                                Edit
-                                            </Link>
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="destructive"
-                                            onClick={() =>
-                                                handleDelete(grade.id)
-                                            }
-                                        >
-                                            Hapus
-                                        </Button>
-                                    </TableCell>
+                    <DataTableWrapper
+                        loading={false}
+                        isEmpty={grades.length === 0}
+                        emptyState={{
+                            icon: LayersIcon,
+                            title: 'Belum ada tingkat kelas',
+                            description: 'Tambah tingkat kelas untuk memulai.',
+                            action: {
+                                label: 'Tambah Tingkat',
+                                href: GradeController.create.url(teamSlug),
+                            },
+                        }}
+                    >
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Nama</TableHead>
+                                    <TableHead>Urutan</TableHead>
+                                    <TableHead className="w-32">Aksi</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {grades.map((grade) => (
+                                    <TableRow key={grade.id}>
+                                        <TableCell className="font-medium">
+                                            {grade.name}
+                                        </TableCell>
+                                        <TableCell>{grade.order}</TableCell>
+                                        <TableCell className="space-x-2">
+                                            <Button size="sm" variant="outline" asChild>
+                                                <Link
+                                                    href={GradeController.edit.url({
+                                                        current_team: teamSlug,
+                                                        grade: grade.id,
+                                                    })}
+                                                >
+                                                    Edit
+                                                </Link>
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                variant="destructive"
+                                                onClick={() => handleDelete(grade.id)}
+                                            >
+                                                Hapus
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </DataTableWrapper>
 
                     <ConfirmDeleteDialog
                         open={confirmOpen}
