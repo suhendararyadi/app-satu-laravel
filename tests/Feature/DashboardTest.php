@@ -14,11 +14,14 @@ test('guests are redirected to the login page', function () {
 test('authenticated users can visit the dashboard', function () {
     $user = User::factory()->create();
 
-    $response = $this
+    $this->withoutVite()
         ->actingAs($user)
-        ->get(route('dashboard'));
-
-    $response->assertOk();
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('dashboard')
+            ->has('hasSchoolTeam')
+        );
 });
 
 test('dashboard passes hasSchoolTeam false when user has no school team', function () {
