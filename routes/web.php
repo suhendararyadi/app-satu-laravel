@@ -36,3 +36,4 @@ require __DIR__.'/cms.php';
 require __DIR__.'/academic.php';
 require __DIR__.'/schedule.php';
 require __DIR__.'/public.php';
+require __DIR__.'/students.php';
