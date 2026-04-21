@@ -5,6 +5,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
     Select,
     SelectContent,
@@ -183,7 +184,7 @@ export default function SchoolProfile({ team }: Props) {
                             {/* Alamat */}
                             <div className="grid gap-2">
                                 <Label htmlFor="address">Alamat</Label>
-                                <textarea
+                                <Textarea
                                     id="address"
                                     value={form.data.address}
                                     onChange={(e) =>
@@ -277,7 +278,7 @@ export default function SchoolProfile({ team }: Props) {
                         {/* Visi */}
                         <div className="grid gap-2">
                             <Label htmlFor="vision">Visi</Label>
-                            <textarea
+                            <Textarea
                                 id="vision"
                                 value={form.data.vision}
                                 onChange={(e) =>
@@ -293,7 +294,7 @@ export default function SchoolProfile({ team }: Props) {
                         {/* Misi */}
                         <div className="grid gap-2">
                             <Label htmlFor="mission">Misi</Label>
-                            <textarea
+                            <Textarea
                                 id="mission"
                                 value={form.data.mission}
                                 onChange={(e) =>
@@ -309,7 +310,7 @@ export default function SchoolProfile({ team }: Props) {
                         {/* Deskripsi */}
                         <div className="grid gap-2">
                             <Label htmlFor="description">Deskripsi</Label>
-                            <textarea
+                            <Textarea
                                 id="description"
                                 value={form.data.description}
                                 onChange={(e) =>
