@@ -2,9 +2,49 @@
 
 namespace App\Http\Controllers\Students;
 
+use App\Exports\StudentTemplateExport;
 use App\Http\Controllers\Controller;
+use App\Imports\StudentImport;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class StudentImportController extends Controller
 {
-    // Stub: full implementation added in StudentImport task
+    public function create(Request $request): Response
+    {
+        $team = $request->user()->currentTeam;
+
+        return Inertia::render('students/import/create', [
+            'classrooms' => $team->classrooms()->select(['id', 'name'])->orderBy('name')->get(),
+            'import_result' => session('import_result'),
+        ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls,csv', 'max:5120'],
+            'classroom_id' => ['nullable', 'integer'],
+        ]);
+
+        $team = $request->user()->currentTeam;
+        $classroomId = $request->integer('classroom_id') ?: null;
+
+        $import = new StudentImport($team, $classroomId);
+        Excel::import($import, $request->file('file'));
+        $result = $import->getResult();
+
+        return redirect()
+            ->route('students.import')
+            ->with('import_result', $result);
+    }
+
+    public function template(): BinaryFileResponse
+    {
+        return Excel::download(new StudentTemplateExport, 'template-import-siswa.xlsx');
+    }
 }
