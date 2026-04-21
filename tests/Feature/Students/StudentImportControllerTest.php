@@ -2,8 +2,12 @@
 
 use App\Enums\TeamRole;
 use App\Imports\StudentImport;
+use App\Models\Academic\AcademicYear;
+use App\Models\Academic\Classroom;
+use App\Models\Academic\Grade;
 use App\Models\Team;
 use App\Models\User;
+use App\Notifications\Students\WelcomeStudent;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
 use Maatwebsite\Excel\Facades\Excel;
@@ -89,7 +93,7 @@ it('StudentImport creates user and adds to team', function () {
 
     Notification::assertSentTo(
         User::where('email', 'budi@test.com')->first(),
-        \App\Notifications\Students\WelcomeStudent::class,
+        WelcomeStudent::class,
     );
 });
 
@@ -118,9 +122,9 @@ it('StudentImport enrolls student when classroom given', function () {
     $team = Team::factory()->create();
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
 
-    $year = \App\Models\Academic\AcademicYear::factory()->for($team)->create();
-    $grade = \App\Models\Academic\Grade::factory()->for($team)->create();
-    $classroom = \App\Models\Academic\Classroom::factory()
+    $year = AcademicYear::factory()->for($team)->create();
+    $grade = Grade::factory()->for($team)->create();
+    $classroom = Classroom::factory()
         ->for($team)->for($year, 'academicYear')->for($grade, 'grade')->create();
 
     $import = new StudentImport($team, $classroom->id);

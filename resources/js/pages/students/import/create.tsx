@@ -29,7 +29,10 @@ interface Props {
     import_result?: ImportResult | null;
 }
 
-export default function StudentImportCreate({ classrooms, import_result }: Props) {
+export default function StudentImportCreate({
+    classrooms,
+    import_result,
+}: Props) {
     const { currentTeam } = usePage().props;
     const teamSlug = currentTeam?.slug ?? '';
 
@@ -53,7 +56,9 @@ export default function StudentImportCreate({ classrooms, import_result }: Props
                     <div className="flex items-center justify-between">
                         <h1 className="text-2xl font-bold">Import Siswa</h1>
                         <Button variant="outline" asChild>
-                            <Link href={StudentController.index.url(teamSlug)}>Kembali</Link>
+                            <Link href={StudentController.index.url(teamSlug)}>
+                                Kembali
+                            </Link>
                         </Button>
                     </div>
 
@@ -61,10 +66,12 @@ export default function StudentImportCreate({ classrooms, import_result }: Props
                         <div className="space-y-2 rounded-md border p-4 text-sm">
                             <p className="font-semibold">Hasil Import</p>
                             <p className="text-green-600">
-                                ✓ {import_result.imported} siswa berhasil diimport
+                                ✓ {import_result.imported} siswa berhasil
+                                diimport
                             </p>
                             <p className="text-yellow-600">
-                                ⚠ {import_result.skipped} baris dilewati (email sudah ada)
+                                ⚠ {import_result.skipped} baris dilewati (email
+                                sudah ada)
                             </p>
                             {import_result.errors.length > 0 && (
                                 <ul className="list-inside list-disc text-red-600">
@@ -78,17 +85,24 @@ export default function StudentImportCreate({ classrooms, import_result }: Props
 
                     <form onSubmit={submit} className="space-y-5">
                         <div className="space-y-1.5">
-                            <Label htmlFor="classroom_id">Kelas (opsional)</Label>
+                            <Label htmlFor="classroom_id">
+                                Kelas (opsional)
+                            </Label>
                             <Select
                                 value={form.data.classroom_id}
-                                onValueChange={(v) => form.setData('classroom_id', v)}
+                                onValueChange={(v) =>
+                                    form.setData('classroom_id', v)
+                                }
                             >
                                 <SelectTrigger id="classroom_id">
                                     <SelectValue placeholder="Pilih kelas (opsional)" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {classrooms.map((c) => (
-                                        <SelectItem key={c.id} value={String(c.id)}>
+                                        <SelectItem
+                                            key={c.id}
+                                            value={String(c.id)}
+                                        >
                                             {c.name}
                                         </SelectItem>
                                     ))}
@@ -97,15 +111,24 @@ export default function StudentImportCreate({ classrooms, import_result }: Props
                         </div>
 
                         <div className="space-y-1.5">
-                            <Label htmlFor="file">File Excel (.xlsx, .xls)</Label>
+                            <Label htmlFor="file">
+                                File Excel (.xlsx, .xls)
+                            </Label>
                             <Input
                                 id="file"
                                 type="file"
                                 accept=".xlsx,.xls,.csv"
-                                onChange={(e) => form.setData('file', e.target.files?.[0] ?? null)}
+                                onChange={(e) =>
+                                    form.setData(
+                                        'file',
+                                        e.target.files?.[0] ?? null,
+                                    )
+                                }
                             />
                             {form.errors.file && (
-                                <p className="text-destructive text-sm">{form.errors.file}</p>
+                                <p className="text-sm text-destructive">
+                                    {form.errors.file}
+                                </p>
                             )}
                         </div>
 
@@ -114,23 +137,29 @@ export default function StudentImportCreate({ classrooms, import_result }: Props
                                 {form.processing ? 'Mengimport...' : 'Import'}
                             </Button>
                             <Button variant="outline" asChild>
-                                <a href={StudentImportController.template.url(teamSlug)}>
+                                <a
+                                    href={StudentImportController.template.url(
+                                        teamSlug,
+                                    )}
+                                >
                                     Download Template
                                 </a>
                             </Button>
                         </div>
                     </form>
 
-                    <div className="bg-muted space-y-1 rounded-md p-4 text-sm">
+                    <div className="space-y-1 rounded-md bg-muted p-4 text-sm">
                         <p className="font-medium">Format file Excel:</p>
-                        <ul className="text-muted-foreground list-inside list-disc">
+                        <ul className="list-inside list-disc text-muted-foreground">
                             <li>
-                                Kolom wajib: <strong>Nama</strong>, <strong>Email</strong>,{' '}
-                                <strong>NIS</strong>
+                                Kolom wajib: <strong>Nama</strong>,{' '}
+                                <strong>Email</strong>, <strong>NIS</strong>
                             </li>
                             <li>Baris pertama adalah header</li>
                             <li>Email yang sudah terdaftar akan dilewati</li>
-                            <li>Password sementara akan dikirim ke email siswa</li>
+                            <li>
+                                Password sementara akan dikirim ke email siswa
+                            </li>
                         </ul>
                     </div>
                 </div>
