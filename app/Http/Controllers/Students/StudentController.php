@@ -16,32 +16,40 @@ class StudentController extends Controller
     public function index(Request $request): Response
     {
         $team = $request->user()->currentTeam;
+        $search = $request->string('search')->trim()->value();
 
-        $students = $team->members()
+        $studentsQuery = $team->members()
             ->wherePivot('role', TeamRole::Student->value)
+            ->when($search, fn ($q) => $q->where(function ($q) use ($search) {
+                $q->where('users.name', 'like', "%{$search}%")
+                    ->orWhere('users.email', 'like', "%{$search}%");
+            }))
             ->with([
                 'enrollments' => fn ($q) => $q
                     ->whereHas('classroom', fn ($q) => $q->where('team_id', $team->id))
                     ->with('classroom:id,name'),
-            ])
-            ->get()
-            ->map(fn (User $user) => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'joined_at' => $user->pivot->created_at,
-                'classrooms' => $user->enrollments->map(fn (StudentEnrollment $e) => [
-                    'id' => $e->classroom->id,
-                    'name' => $e->classroom->name,
-                    'student_number' => $e->student_number,
-                ]),
             ]);
+
+        $paginated = $studentsQuery->paginate(15)->through(fn (User $user) => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'joined_at' => $user->pivot->created_at,
+            'classrooms' => $user->enrollments->map(fn (StudentEnrollment $e) => [
+                'id' => $e->classroom->id,
+                'name' => $e->classroom->name,
+                'student_number' => $e->student_number,
+            ]),
+        ]);
 
         $classrooms = $team->classrooms()->select(['id', 'name'])->orderBy('name')->get();
 
         return Inertia::render('students/index', [
-            'students' => $students,
+            'students' => $paginated,
             'classrooms' => $classrooms,
+            'filters' => [
+                'search' => $search,
+            ],
         ]);
     }
 
@@ -54,7 +62,6 @@ class StudentController extends Controller
             404,
         );
 
-        // Remove all enrollments in this team's classrooms
         StudentEnrollment::whereIn(
             'classroom_id',
             $team->classrooms()->pluck('id'),
