@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Students;
 
 use App\Enums\TeamRole;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Students\StoreStudentRequest;
+use App\Http\Requests\Students\UpdateStudentRequest;
 use App\Models\Academic\StudentEnrollment;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -51,6 +54,116 @@ class StudentController extends Controller
                 'search' => $search,
             ],
         ]);
+    }
+
+    public function create(Request $request): Response
+    {
+        $team = $request->user()->currentTeam;
+        $classrooms = $team->classrooms()->select(['id', 'name'])->orderBy('name')->get();
+
+        return Inertia::render('students/create', [
+            'classrooms' => $classrooms,
+        ]);
+    }
+
+    public function store(StoreStudentRequest $request): RedirectResponse
+    {
+        $team = $request->user()->currentTeam;
+        $validated = $request->validated();
+
+        $student = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'email_verified_at' => now(),
+        ]);
+
+        $team->members()->attach($student->id, ['role' => TeamRole::Student->value]);
+
+        if (! empty($validated['classroom_id'])) {
+            StudentEnrollment::create([
+                'classroom_id' => $validated['classroom_id'],
+                'user_id' => $student->id,
+                'student_number' => $validated['student_number'] ?? null,
+            ]);
+        }
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Siswa berhasil ditambahkan.']);
+
+        return to_route('students.index');
+    }
+
+    public function edit(Request $request, string $currentTeam, User $user): Response
+    {
+        $team = $request->user()->currentTeam;
+
+        abort_unless(
+            $team->members()->where('users.id', $user->id)->wherePivot('role', TeamRole::Student->value)->exists(),
+            404,
+        );
+
+        $enrollment = StudentEnrollment::whereIn(
+            'classroom_id',
+            $team->classrooms()->pluck('id'),
+        )->where('user_id', $user->id)->first();
+
+        $classrooms = $team->classrooms()->select(['id', 'name'])->orderBy('name')->get();
+
+        return Inertia::render('students/edit', [
+            'student' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+            'enrollment' => $enrollment ? [
+                'classroom_id' => $enrollment->classroom_id,
+                'student_number' => $enrollment->student_number,
+            ] : null,
+            'classrooms' => $classrooms,
+        ]);
+    }
+
+    public function update(UpdateStudentRequest $request, string $currentTeam, User $user): RedirectResponse
+    {
+        $team = $request->user()->currentTeam;
+
+        abort_unless(
+            $team->members()->where('users.id', $user->id)->wherePivot('role', TeamRole::Student->value)->exists(),
+            404,
+        );
+
+        $validated = $request->validated();
+
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ]);
+
+        $existingEnrollment = StudentEnrollment::whereIn(
+            'classroom_id',
+            $team->classrooms()->pluck('id'),
+        )->where('user_id', $user->id)->first();
+
+        if (! empty($validated['classroom_id'])) {
+            if ($existingEnrollment) {
+                $existingEnrollment->update([
+                    'classroom_id' => $validated['classroom_id'],
+                    'student_number' => $validated['student_number'] ?? null,
+                ]);
+            } else {
+                StudentEnrollment::create([
+                    'classroom_id' => $validated['classroom_id'],
+                    'user_id' => $user->id,
+                    'student_number' => $validated['student_number'] ?? null,
+                ]);
+            }
+        } else {
+            $existingEnrollment?->delete();
+        }
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Data siswa berhasil diperbarui.']);
+
+        return to_route('students.index');
     }
 
     public function destroy(Request $request, string $currentTeam, User $user): RedirectResponse
