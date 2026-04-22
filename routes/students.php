@@ -19,6 +19,7 @@ Route::middleware(['auth', 'verified', EnsureTeamMembership::class.':admin'])
         Route::get('students/import/template', [StudentImportController::class, 'template'])->name('import.template');
 
         // Wildcard after static routes
+        Route::get('students/{user}', [StudentController::class, 'show'])->name('show');
         Route::get('students/{user}/edit', [StudentController::class, 'edit'])->name('edit');
         Route::patch('students/{user}', [StudentController::class, 'update'])->name('update');
         Route::delete('students/{user}', [StudentController::class, 'destroy'])->name('destroy');
