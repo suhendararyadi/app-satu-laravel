@@ -2,12 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 
 import StudentController from '@/actions/App/Http/Controllers/Students/StudentController';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Pagination } from '@/components/ui/pagination';
 import {
     Table,
@@ -106,7 +101,7 @@ export default function StudentShow({
                             <h1 className="text-2xl font-bold">
                                 {student.name}
                             </h1>
-                            <p className="text-muted-foreground text-sm">
+                            <p className="text-sm text-muted-foreground">
                                 {student.email}
                             </p>
                         </div>
@@ -139,7 +134,7 @@ export default function StudentShow({
                         <CardContent>
                             <dl className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <dt className="text-muted-foreground text-sm">
+                                    <dt className="text-sm text-muted-foreground">
                                         Email
                                     </dt>
                                     <dd className="font-medium">
@@ -147,7 +142,7 @@ export default function StudentShow({
                                     </dd>
                                 </div>
                                 <div>
-                                    <dt className="text-muted-foreground text-sm">
+                                    <dt className="text-sm text-muted-foreground">
                                         Bergabung
                                     </dt>
                                     <dd className="font-medium">
@@ -173,7 +168,7 @@ export default function StudentShow({
                             {enrollment ? (
                                 <dl className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <dt className="text-muted-foreground text-sm">
+                                        <dt className="text-sm text-muted-foreground">
                                             Kelas
                                         </dt>
                                         <dd className="font-medium">
@@ -181,7 +176,7 @@ export default function StudentShow({
                                         </dd>
                                     </div>
                                     <div>
-                                        <dt className="text-muted-foreground text-sm">
+                                        <dt className="text-sm text-muted-foreground">
                                             NIS
                                         </dt>
                                         <dd className="font-medium">
@@ -189,7 +184,7 @@ export default function StudentShow({
                                         </dd>
                                     </div>
                                     <div>
-                                        <dt className="text-muted-foreground text-sm">
+                                        <dt className="text-sm text-muted-foreground">
                                             Tingkat
                                         </dt>
                                         <dd className="font-medium">
@@ -197,7 +192,7 @@ export default function StudentShow({
                                         </dd>
                                     </div>
                                     <div>
-                                        <dt className="text-muted-foreground text-sm">
+                                        <dt className="text-sm text-muted-foreground">
                                             Tahun Ajaran
                                         </dt>
                                         <dd className="font-medium">
@@ -206,7 +201,7 @@ export default function StudentShow({
                                     </div>
                                 </dl>
                             ) : (
-                                <p className="text-muted-foreground text-sm">
+                                <p className="text-sm text-muted-foreground">
                                     Belum terdaftar di kelas manapun.
                                 </p>
                             )}
@@ -289,7 +284,7 @@ export default function StudentShow({
                                 <Pagination meta={attendance_records} />
                             </>
                         ) : (
-                            <p className="text-muted-foreground text-sm">
+                            <p className="text-sm text-muted-foreground">
                                 Belum ada data kehadiran.
                             </p>
                         )}
@@ -324,7 +319,7 @@ export default function StudentShow({
                                 </TableBody>
                             </Table>
                         ) : (
-                            <p className="text-muted-foreground text-sm">
+                            <p className="text-sm text-muted-foreground">
                                 Belum ada data wali.
                             </p>
                         )}
