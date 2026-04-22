@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Academic\AcademicYearController;
+use App\Http\Controllers\Academic\AssessmentCategoryController;
+use App\Http\Controllers\Academic\AssessmentController;
 use App\Http\Controllers\Academic\ClassroomController;
 use App\Http\Controllers\Academic\GradeController;
+use App\Http\Controllers\Academic\ReportCardController;
 use App\Http\Controllers\Academic\SubjectController;
 use App\Http\Controllers\Academic\TeacherAssignmentController;
 use App\Http\Middleware\EnsureTeamMembership;
@@ -47,4 +50,24 @@ Route::middleware(['auth', 'verified', EnsureTeamMembership::class.':admin'])
             ->name('assignments.store');
         Route::delete('academic/assignments/{assignment}', [TeacherAssignmentController::class, 'destroy'])
             ->name('assignments.destroy');
+
+        // Assessment Categories
+        Route::resource('academic/assessment-categories', AssessmentCategoryController::class)
+            ->parameters(['assessment-categories' => 'assessmentCategory'])
+            ->except(['show']);
+    });
+
+Route::middleware(['auth', 'verified', EnsureTeamMembership::class.':teacher'])
+    ->prefix('/{current_team}')
+    ->name('academic.')
+    ->group(function () {
+        // Assessments
+        Route::resource('academic/assessments', AssessmentController::class);
+        Route::post('academic/assessments/{assessment}/scores', [AssessmentController::class, 'storeScores'])
+            ->name('assessments.scores.store');
+
+        // Report Cards
+        Route::resource('academic/report-cards', ReportCardController::class)
+            ->parameters(['report-cards' => 'reportCard'])
+            ->only(['index', 'show', 'store', 'update']);
     });
