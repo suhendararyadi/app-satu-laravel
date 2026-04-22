@@ -9,6 +9,16 @@
                 "artisan",
                 "boost:mcp"
             ]
+        },
+        "shadcn": {
+            "type": "local",
+            "enabled": true,
+            "command": [
+                "/Users/suhendararyadi/.local/bin/npx",
+                "-y",
+                "shadcn@latest",
+                "mcp"
+            ]
         }
     }
 }
