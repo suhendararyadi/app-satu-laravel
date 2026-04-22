@@ -127,15 +127,26 @@ export default function StudentsIndex({
                     <PageHeader
                         title="Manajemen Siswa"
                         action={
-                            <Button asChild>
-                                <Link
-                                    href={StudentImportController.create.url(
-                                        teamSlug,
-                                    )}
-                                >
-                                    Import Siswa
-                                </Link>
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button asChild variant="outline">
+                                    <Link
+                                        href={StudentImportController.create.url(
+                                            teamSlug,
+                                        )}
+                                    >
+                                        Import Siswa
+                                    </Link>
+                                </Button>
+                                <Button asChild>
+                                    <Link
+                                        href={StudentController.create.url(
+                                            teamSlug,
+                                        )}
+                                    >
+                                        Tambah Siswa
+                                    </Link>
+                                </Button>
+                            </div>
                         }
                     />
 
@@ -184,7 +195,7 @@ export default function StudentsIndex({
                                     <TableHead>Email</TableHead>
                                     <TableHead>Kelas</TableHead>
                                     <TableHead>NIS</TableHead>
-                                    <TableHead className="w-24">Aksi</TableHead>
+                                    <TableHead className="w-36">Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -208,16 +219,35 @@ export default function StudentsIndex({
                                                 : '—'}
                                         </TableCell>
                                         <TableCell>
-                                            <Button
-                                                size="sm"
-                                                variant="destructive"
-                                                onClick={() => {
-                                                    setDeleteId(student.id);
-                                                    setConfirmOpen(true);
-                                                }}
-                                            >
-                                                Hapus
-                                            </Button>
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    asChild
+                                                >
+                                                    <Link
+                                                        href={StudentController.edit.url(
+                                                            {
+                                                                current_team:
+                                                                    teamSlug,
+                                                                user: student.id,
+                                                            },
+                                                        )}
+                                                    >
+                                                        Edit
+                                                    </Link>
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="destructive"
+                                                    onClick={() => {
+                                                        setDeleteId(student.id);
+                                                        setConfirmOpen(true);
+                                                    }}
+                                                >
+                                                    Hapus
+                                                </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))}
