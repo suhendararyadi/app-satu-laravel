@@ -201,7 +201,19 @@ export default function StudentsIndex({
                             <TableBody>
                                 {students.data.map((student) => (
                                     <TableRow key={student.id}>
-                                        <TableCell>{student.name}</TableCell>
+                                        <TableCell>
+                                            <Link
+                                                href={StudentController.show.url(
+                                                    {
+                                                        current_team: teamSlug,
+                                                        user: student.id,
+                                                    },
+                                                )}
+                                                className="font-medium hover:underline"
+                                            >
+                                                {student.name}
+                                            </Link>
+                                        </TableCell>
                                         <TableCell className="text-muted-foreground">
                                             {student.email}
                                         </TableCell>
