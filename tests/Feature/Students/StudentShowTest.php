@@ -107,22 +107,37 @@ it('attendance summary counts are correct', function () {
         ->for($year, 'academicYear')
         ->for($grade, 'grade')
         ->create();
-    $attendance = Attendance::factory()
+
+    // Each attendance session can only have one record per student
+    $attendancesHadir = Attendance::factory()->count(3)
         ->for($this->team)
         ->for($classroom)
         ->for($semester)
         ->create();
 
-    AttendanceRecord::factory()->count(3)->create([
-        'attendance_id' => $attendance->id,
-        'student_user_id' => $this->student->id,
-        'status' => AttendanceStatus::Hadir->value,
-    ]);
-    AttendanceRecord::factory()->count(2)->create([
-        'attendance_id' => $attendance->id,
-        'student_user_id' => $this->student->id,
-        'status' => AttendanceStatus::Alpa->value,
-    ]);
+    $attendancesAlpa = Attendance::factory()->count(2)
+        ->for($this->team)
+        ->for($classroom)
+        ->for($semester)
+        ->create();
+
+    foreach ($attendancesHadir as $attendance) {
+        AttendanceRecord::factory()->create([
+            'attendance_id' => $attendance->id,
+            'student_user_id' => $this->student->id,
+            'status' => AttendanceStatus::Hadir->value,
+        ]);
+    }
+
+    foreach ($attendancesAlpa as $attendance) {
+        AttendanceRecord::factory()->create([
+            'attendance_id' => $attendance->id,
+            'student_user_id' => $this->student->id,
+            'status' => AttendanceStatus::Alpa->value,
+        ]);
+    }
+
+    $this->owner->switchTeam($this->team); // reset URL::defaults after factory calls
 
     $this->actingAs($this->owner)
         ->get(route('students.show', ['user' => $this->student->id]))
@@ -144,16 +159,22 @@ it('attendance records are paginated', function () {
         ->for($year, 'academicYear')
         ->for($grade, 'grade')
         ->create();
-    $attendance = Attendance::factory()
+
+    // Each attendance session can only have one record per student
+    $attendances = Attendance::factory()->count(20)
         ->for($this->team)
         ->for($classroom)
         ->for($semester)
         ->create();
 
-    AttendanceRecord::factory()->count(20)->create([
-        'attendance_id' => $attendance->id,
-        'student_user_id' => $this->student->id,
-    ]);
+    foreach ($attendances as $attendance) {
+        AttendanceRecord::factory()->create([
+            'attendance_id' => $attendance->id,
+            'student_user_id' => $this->student->id,
+        ]);
+    }
+
+    $this->owner->switchTeam($this->team); // reset URL::defaults after factory calls
 
     $this->actingAs($this->owner)
         ->get(route('students.show', ['user' => $this->student->id]))

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Students;
 
+use App\Enums\AttendanceStatus;
 use App\Enums\TeamRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Students\StoreStudentRequest;
 use App\Http\Requests\Students\UpdateStudentRequest;
+use App\Models\Academic\Guardian;
 use App\Models\Academic\StudentEnrollment;
+use App\Models\Schedule\AttendanceRecord;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -63,6 +66,89 @@ class StudentController extends Controller
 
         return Inertia::render('students/create', [
             'classrooms' => $classrooms,
+        ]);
+    }
+
+    public function show(Request $request, string $currentTeam, User $user): Response
+    {
+        $team = $request->user()->currentTeam;
+
+        $studentMembership = $team->members()
+            ->where('users.id', $user->id)
+            ->wherePivot('role', TeamRole::Student->value)
+            ->first();
+
+        abort_unless($studentMembership !== null, 404);
+
+        $classroomIds = $team->classrooms()->pluck('id');
+
+        $enrollment = StudentEnrollment::whereIn('classroom_id', $classroomIds)
+            ->where('user_id', $user->id)
+            ->with([
+                'classroom:id,name,grade_id,academic_year_id',
+                'classroom.grade:id,name',
+                'classroom.academicYear:id,name',
+            ])
+            ->first();
+
+        $rawSummary = AttendanceRecord::query()
+            ->join('attendances', 'attendance_records.attendance_id', '=', 'attendances.id')
+            ->whereIn('attendances.classroom_id', $classroomIds)
+            ->where('attendance_records.student_user_id', $user->id)
+            ->selectRaw('attendance_records.status, count(*) as count')
+            ->groupBy('attendance_records.status')
+            ->toBase()
+            ->pluck('count', 'status');
+
+        $attendanceSummary = collect(AttendanceStatus::cases())->map(fn (AttendanceStatus $s) => [
+            'status' => $s->value,
+            'count' => (int) ($rawSummary[$s->value] ?? 0),
+        ]);
+
+        $attendanceRecords = AttendanceRecord::query()
+            ->join('attendances', 'attendance_records.attendance_id', '=', 'attendances.id')
+            ->leftJoin('subjects', 'attendances.subject_id', '=', 'subjects.id')
+            ->whereIn('attendances.classroom_id', $classroomIds)
+            ->where('attendance_records.student_user_id', $user->id)
+            ->orderByDesc('attendances.date')
+            ->select(
+                'attendance_records.*',
+                'attendances.date as attendance_date',
+                'subjects.name as subject_name',
+            )
+            ->paginate(15)
+            ->through(fn (AttendanceRecord $record) => [
+                'date' => $record->attendance_date,
+                'subject_name' => $record->subject_name,
+                'status' => $record->status->value,
+                'notes' => $record->notes,
+            ]);
+
+        $guardians = Guardian::where('student_id', $user->id)
+            ->with('guardian:id,name,email')
+            ->get()
+            ->map(fn (Guardian $g) => [
+                'name' => $g->guardian->name,
+                'email' => $g->guardian->email,
+                'relationship_label' => $g->relationship->label(),
+            ]);
+
+        return Inertia::render('students/show', [
+            'student' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'joined_at' => $studentMembership->pivot->created_at,
+            ],
+            'enrollment' => $enrollment ? [
+                'classroom_name' => $enrollment->classroom->name,
+                'student_number' => $enrollment->student_number,
+                'grade_name' => $enrollment->classroom->grade->name,
+                'academic_year_name' => $enrollment->classroom->academicYear->name,
+            ] : null,
+            'attendance_summary' => $attendanceSummary,
+            'attendance_records' => $attendanceRecords,
+            'guardians' => $guardians,
         ]);
     }
 
