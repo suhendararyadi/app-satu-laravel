@@ -236,3 +236,34 @@ it('returns student dashboard data', function () {
             ->where('data.attendance_summary.alpa', 0)
         );
 });
+
+// ---------------------------------------------------------------------------
+// Cross-tenant isolation
+// ---------------------------------------------------------------------------
+
+it('admin dashboard does not include data from other teams', function () {
+    [$owner, $team] = makeDashboardTeam(TeamRole::Owner);
+    [$year] = makeActiveYear($team);
+
+    $grade = Grade::factory()->for($team)->create();
+    $classroom = Classroom::factory()->for($team)->for($year, 'academicYear')->for($grade)->create();
+    $student = User::factory()->create();
+    StudentEnrollment::factory()->create(['classroom_id' => $classroom->id, 'user_id' => $student->id]);
+
+    // Another team with its own student and classroom (should NOT appear in $team's data)
+    $otherTeam = Team::factory()->create(['is_personal' => false]);
+    $otherYear = AcademicYear::factory()->for($otherTeam)->create(['is_active' => true]);
+    $otherGrade = Grade::factory()->for($otherTeam)->create();
+    $otherClassroom = Classroom::factory()->for($otherTeam)->for($otherYear, 'academicYear')->for($otherGrade)->create();
+    $otherStudent = User::factory()->create();
+    StudentEnrollment::factory()->create(['classroom_id' => $otherClassroom->id, 'user_id' => $otherStudent->id]);
+
+    $this->withoutVite()
+        ->actingAs($owner)
+        ->get(route('dashboard', $team))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->where('data.total_students', 1)
+            ->where('data.total_classrooms', 1)
+        );
+});
