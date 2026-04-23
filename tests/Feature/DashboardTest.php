@@ -4,6 +4,7 @@ use App\Enums\TeamRole;
 use App\Models\Academic\AcademicYear;
 use App\Models\Academic\Classroom;
 use App\Models\Academic\Grade;
+use App\Models\Academic\Guardian;
 use App\Models\Academic\Semester;
 use App\Models\Academic\StudentEnrollment;
 use App\Models\Academic\Subject;
@@ -159,6 +160,47 @@ it('returns teacher dashboard data', function () {
             ->where('data.my_classrooms.0.student_count', 0)
             ->has('data.schedule_today', 0)
             ->has('data.pending_assessments', 0)
+        );
+});
+
+// ---------------------------------------------------------------------------
+// Parent dashboard
+// ---------------------------------------------------------------------------
+
+it('returns parent dashboard data', function () {
+    [$parent, $team] = makeDashboardTeam(TeamRole::Parent);
+    [$year, $semester] = makeActiveYear($team);
+
+    $grade = Grade::factory()->for($team)->create();
+    $classroom = Classroom::factory()->for($team)->for($year, 'academicYear')->for($grade)->create();
+
+    $studentUser = User::factory()->create();
+    $team->members()->attach($studentUser, ['role' => TeamRole::Student->value]);
+    StudentEnrollment::factory()->create(['classroom_id' => $classroom->id, 'user_id' => $studentUser->id]);
+
+    Guardian::factory()->create([
+        'student_id' => $studentUser->id,
+        'guardian_id' => $parent->id,
+    ]);
+
+    $this->withoutVite()
+        ->actingAs($parent)
+        ->get(route('dashboard', $team))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('dashboard')
+            ->where('hasSchoolTeam', true)
+            ->where('role', 'parent')
+            ->has('data.children', 1)
+            ->has('data.children.0.student')
+            ->where('data.children.0.student.name', $studentUser->name)
+            ->has('data.children.0.classroom')
+            ->where('data.children.0.classroom.name', $classroom->name)
+            ->has('data.children.0.recent_scores', 0)
+            ->where('data.children.0.attendance_summary.hadir', 0)
+            ->where('data.children.0.attendance_summary.sakit', 0)
+            ->where('data.children.0.attendance_summary.izin', 0)
+            ->where('data.children.0.attendance_summary.alpa', 0)
         );
 });
 
