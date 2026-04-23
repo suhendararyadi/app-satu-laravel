@@ -37,7 +37,7 @@ class TeacherDashboardData
                 ->get()
                 ->unique('classroom_id');
 
-            $classroomIds = $assignments->pluck('classroom_id')->unique()->filter()->values();
+            $classroomIds = $assignments->pluck('classroom_id')->filter()->values();
 
             $enrollmentCounts = StudentEnrollment::whereIn('classroom_id', $classroomIds)
                 ->select('classroom_id', DB::raw('count(*) as count'))
@@ -66,7 +66,7 @@ class TeacherDashboardData
                 ->where('semester_id', $activeSemester->id)
                 ->where('teacher_user_id', $user->id)
                 ->where('day_of_week', $todayName)
-                ->with(['classroom:id,name', 'subject:id,name', 'timeSlot'])
+                ->with(['classroom:id,name', 'subject:id,name', 'timeSlot:id,start_time,end_time'])
                 ->get()
                 ->map(fn ($s) => [
                     'id' => $s->id,
@@ -91,20 +91,20 @@ class TeacherDashboardData
                 ->withCount('scores')
                 ->get();
 
-            $classroomIds = $assessments->pluck('classroom_id')->unique()->filter()->values();
+            $assessmentClassroomIds = $assessments->pluck('classroom_id')->unique()->filter()->values();
 
-            $enrollmentCounts = StudentEnrollment::whereIn('classroom_id', $classroomIds)
+            $assessmentEnrollmentCounts = StudentEnrollment::whereIn('classroom_id', $assessmentClassroomIds)
                 ->select('classroom_id', DB::raw('count(*) as count'))
                 ->groupBy('classroom_id')
                 ->pluck('count', 'classroom_id');
 
             $pendingAssessments = $assessments
-                ->filter(function ($assessment) use ($enrollmentCounts) {
-                    $total = (int) ($enrollmentCounts[$assessment->classroom_id] ?? 0);
+                ->filter(function ($assessment) use ($assessmentEnrollmentCounts) {
+                    $total = (int) ($assessmentEnrollmentCounts[$assessment->classroom_id] ?? 0);
 
                     return $assessment->scores_count < $total;
                 })
-                ->map(function ($assessment) use ($enrollmentCounts) {
+                ->map(function ($assessment) use ($assessmentEnrollmentCounts) {
                     return [
                         'id' => $assessment->id,
                         'title' => $assessment->title,
@@ -112,7 +112,7 @@ class TeacherDashboardData
                         'subject' => $assessment->subject?->name,
                         'date' => $assessment->date?->toDateString(),
                         'scored' => $assessment->scores_count,
-                        'total' => (int) ($enrollmentCounts[$assessment->classroom_id] ?? 0),
+                        'total' => (int) ($assessmentEnrollmentCounts[$assessment->classroom_id] ?? 0),
                     ];
                 })
                 ->values()

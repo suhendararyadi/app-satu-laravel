@@ -154,8 +154,10 @@ it('returns teacher dashboard data', function () {
             ->component('dashboard')
             ->where('hasSchoolTeam', true)
             ->where('role', 'teacher')
-            ->has('data.my_classrooms')
-            ->has('data.schedule_today')
-            ->has('data.pending_assessments')
+            ->has('data.my_classrooms', 1)
+            ->where('data.my_classrooms.0.name', $classroom->name)
+            ->where('data.my_classrooms.0.student_count', 0)
+            ->has('data.schedule_today', 0)
+            ->has('data.pending_assessments', 0)
         );
 });
