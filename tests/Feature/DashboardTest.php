@@ -6,6 +6,8 @@ use App\Models\Academic\Classroom;
 use App\Models\Academic\Grade;
 use App\Models\Academic\Semester;
 use App\Models\Academic\StudentEnrollment;
+use App\Models\Academic\Subject;
+use App\Models\Academic\TeacherAssignment;
 use App\Models\Team;
 use App\Models\User;
 
@@ -121,5 +123,39 @@ it('returns admin dashboard data for owner', function () {
             ->has('data.attendance_today.alpa')
             ->has('data.attendance_today.date')
             ->has('data.recent_assessments')
+        );
+});
+
+// ---------------------------------------------------------------------------
+// Teacher dashboard
+// ---------------------------------------------------------------------------
+
+it('returns teacher dashboard data', function () {
+    [$teacher, $team] = makeDashboardTeam(TeamRole::Teacher);
+    [$year, $semester] = makeActiveYear($team);
+
+    $grade = Grade::factory()->for($team)->create();
+    $classroom = Classroom::factory()->for($team)->for($year, 'academicYear')->for($grade)->create();
+    $subject = Subject::factory()->for($team)->create();
+
+    TeacherAssignment::factory()->create([
+        'team_id' => $team->id,
+        'academic_year_id' => $year->id,
+        'classroom_id' => $classroom->id,
+        'subject_id' => $subject->id,
+        'user_id' => $teacher->id,
+    ]);
+
+    $this->withoutVite()
+        ->actingAs($teacher)
+        ->get(route('dashboard', $team))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('dashboard')
+            ->where('hasSchoolTeam', true)
+            ->where('role', 'teacher')
+            ->has('data.my_classrooms')
+            ->has('data.schedule_today')
+            ->has('data.pending_assessments')
         );
 });
