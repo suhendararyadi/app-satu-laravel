@@ -161,3 +161,34 @@ it('returns teacher dashboard data', function () {
             ->has('data.pending_assessments', 0)
         );
 });
+
+// ---------------------------------------------------------------------------
+// Student dashboard
+// ---------------------------------------------------------------------------
+
+it('returns student dashboard data', function () {
+    [$student, $team] = makeDashboardTeam(TeamRole::Student);
+    [$year, $semester] = makeActiveYear($team);
+
+    $grade = Grade::factory()->for($team)->create();
+    $classroom = Classroom::factory()->for($team)->for($year, 'academicYear')->for($grade)->create();
+    StudentEnrollment::factory()->create(['classroom_id' => $classroom->id, 'user_id' => $student->id]);
+
+    $this->withoutVite()
+        ->actingAs($student)
+        ->get(route('dashboard', $team))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('dashboard')
+            ->where('hasSchoolTeam', true)
+            ->where('role', 'student')
+            ->has('data.classroom')
+            ->where('data.classroom.name', $classroom->name)
+            ->has('data.schedule_today', 0)
+            ->has('data.recent_scores', 0)
+            ->has('data.attendance_summary.hadir')
+            ->has('data.attendance_summary.sakit')
+            ->has('data.attendance_summary.izin')
+            ->has('data.attendance_summary.alpa')
+        );
+});
