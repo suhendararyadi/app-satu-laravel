@@ -1,5 +1,41 @@
 # AGENTS.md
 
+## Superpowers Skills
+
+Skills are stored in `docs/superpowers/skills/{skill-name}/SKILL.md`. To invoke a skill, read the relevant file and follow its instructions exactly. **If there is even a 1% chance a skill applies, you MUST read and use it.**
+
+### Skill Index
+
+| Skill | File | Invoke when… |
+|-------|------|--------------|
+| `using-superpowers` | `docs/superpowers/skills/using-superpowers/SKILL.md` | Starting any conversation — establishes the skill system |
+| `brainstorming` | `docs/superpowers/skills/brainstorming/SKILL.md` | User wants to build a new feature, component, or make a behavior change — BEFORE writing any code |
+| `writing-plans` | `docs/superpowers/skills/writing-plans/SKILL.md` | You have an approved spec and need to create a step-by-step implementation plan |
+| `executing-plans` | `docs/superpowers/skills/executing-plans/SKILL.md` | You have a written plan to execute (inline, with checkpoints) |
+| `subagent-driven-development` | `docs/superpowers/skills/subagent-driven-development/SKILL.md` | Executing an implementation plan by dispatching fresh subagents per task |
+| `test-driven-development` | `docs/superpowers/skills/test-driven-development/SKILL.md` | Implementing any feature or bugfix — BEFORE writing implementation code |
+| `systematic-debugging` | `docs/superpowers/skills/systematic-debugging/SKILL.md` | Any bug, test failure, or unexpected behavior — BEFORE proposing a fix |
+| `requesting-code-review` | `docs/superpowers/skills/requesting-code-review/SKILL.md` | Completing a task or major feature, or before merging |
+| `receiving-code-review` | `docs/superpowers/skills/receiving-code-review/SKILL.md` | Receiving review feedback — before implementing suggestions |
+| `finishing-a-development-branch` | `docs/superpowers/skills/finishing-a-development-branch/SKILL.md` | Implementation is complete and tests pass — decide merge/PR/discard |
+| `using-git-worktrees` | `docs/superpowers/skills/using-git-worktrees/SKILL.md` | Starting feature work that needs branch isolation |
+| `verification-before-completion` | `docs/superpowers/skills/verification-before-completion/SKILL.md` | About to claim work is complete, fixed, or passing |
+| `dispatching-parallel-agents` | `docs/superpowers/skills/dispatching-parallel-agents/SKILL.md` | 2+ independent tasks or failures that can be worked on concurrently |
+| `writing-skills` | `docs/superpowers/skills/writing-skills/SKILL.md` | Creating or editing a skill document |
+
+### Basic Workflow
+
+1. **New feature idea** → `brainstorming` → `writing-plans` → `subagent-driven-development` or `executing-plans`
+2. **Bug / test failure** → `systematic-debugging` → `test-driven-development` (for the fix)
+3. **Implementation** → `test-driven-development` (always) + `verification-before-completion` before claiming done
+4. **After all tasks done** → `finishing-a-development-branch`
+
+### Skill Priority
+
+When multiple skills could apply: **process skills first** (brainstorming, debugging), then **implementation skills** (writing-plans, executing-plans).
+
+---
+
 ## Stack
 
 Laravel 13 + React 19 + Inertia.js v3 + TypeScript + Tailwind CSS v4. Auth via Laravel Fortify. Teams/memberships are first-class models (`User`, `Team`, `Membership`, `TeamInvitation`). Default DB is SQLite.
