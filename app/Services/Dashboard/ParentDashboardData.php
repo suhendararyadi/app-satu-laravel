@@ -35,7 +35,7 @@ class ParentDashboardData
         // Find all students where this user is a guardian
         // Guardian model has no team_id; scope to team via StudentEnrollment on active year
         $guardians = Guardian::where('guardian_id', $user->id)
-            ->with('student')
+            ->with('student:id,name,email')
             ->get();
 
         $children = [];
