@@ -31,7 +31,7 @@ class DashboardController extends Controller
             return Inertia::render('dashboard', ['hasSchoolTeam' => true]);
         }
 
-        if ($role->level() >= TeamRole::Admin->level()) {
+        if ($role->isAtLeast(TeamRole::Admin)) {
             return Inertia::render('dashboard', [
                 'hasSchoolTeam' => true,
                 'role' => $role->value,

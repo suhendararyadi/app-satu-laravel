@@ -15,6 +15,13 @@ use Illuminate\Support\Facades\DB;
 
 class AdminDashboardData
 {
+    /**
+     * Get admin dashboard data for the given team.
+     *
+     * Note: $user is part of the uniform dashboard service interface.
+     * Admin data is team-scoped, so $user is not used here, but Teacher/Student/Parent
+     * services rely on it.
+     */
     public function get(User $user, Team $team): array
     {
         $activeYear = AcademicYear::where('team_id', $team->id)
