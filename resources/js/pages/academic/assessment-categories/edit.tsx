@@ -1,7 +1,7 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
 import AssessmentCategoryController from '@/actions/App/Http/Controllers/Academic/AssessmentCategoryController';
-import PageHeader from '@/components/page-header';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,52 +11,73 @@ interface Props {
     category: AssessmentCategory;
 }
 
-export default function Edit({ category }: Props) {
-    const { data, setData, patch, processing, errors } = useForm({
-        name: category.name,
-        weight: String(category.weight),
-    });
+export default function AssessmentCategoryEdit({ category }: Props) {
+    const { currentTeam } = usePage().props;
+    const teamSlug = (currentTeam as { slug: string } | null)?.slug ?? '';
 
-    function handleSubmit(e: React.FormEvent) {
+    const form = useForm({ name: category.name, weight: category.weight });
+
+    function submit(e: React.FormEvent) {
         e.preventDefault();
-        patch(AssessmentCategoryController.update.url({ assessmentCategory: category.id }));
+        form.patch(
+            AssessmentCategoryController.update.url({
+                current_team: teamSlug,
+                assessmentCategory: category.id,
+            }),
+        );
     }
 
     return (
         <>
             <Head title="Edit Kategori Penilaian" />
-            <div className="space-y-6">
-                <PageHeader
-                    title="Edit Kategori Penilaian"
-                    description="Perbarui kategori penilaian."
-                />
-
-                <form onSubmit={handleSubmit} className="max-w-lg space-y-4">
-                    <div className="space-y-1">
-                        <Label htmlFor="name">Nama</Label>
-                        <Input
-                            id="name"
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
-                        />
-                        {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
-                    </div>
-
-                    <div className="space-y-1">
-                        <Label htmlFor="weight">Bobot (%)</Label>
-                        <Input
-                            id="weight"
-                            type="number"
-                            value={data.weight}
-                            onChange={(e) => setData('weight', e.target.value)}
-                        />
-                        {errors.weight && <p className="text-sm text-red-500">{errors.weight}</p>}
-                    </div>
-
-                    <Button type="submit" disabled={processing}>
-                        Perbarui
-                    </Button>
-                </form>
+            <div className="px-4 py-6">
+                <div className="max-w-md space-y-6">
+                    <h1 className="text-2xl font-bold">
+                        Edit Kategori Penilaian
+                    </h1>
+                    <form onSubmit={submit} className="space-y-4">
+                        <div>
+                            <Label htmlFor="name">Nama</Label>
+                            <Input
+                                id="name"
+                                value={form.data.name}
+                                onChange={(e) =>
+                                    form.setData('name', e.target.value)
+                                }
+                            />
+                            <InputError message={form.errors.name} />
+                        </div>
+                        <div>
+                            <Label htmlFor="weight">Bobot (%)</Label>
+                            <Input
+                                id="weight"
+                                type="number"
+                                min={0}
+                                max={100}
+                                step={0.01}
+                                value={form.data.weight}
+                                onChange={(e) =>
+                                    form.setData('weight', e.target.value)
+                                }
+                            />
+                            <InputError message={form.errors.weight} />
+                        </div>
+                        <div className="flex gap-2">
+                            <Button type="submit" disabled={form.processing}>
+                                Perbarui
+                            </Button>
+                            <Button type="button" variant="outline" asChild>
+                                <Link
+                                    href={AssessmentCategoryController.index.url(
+                                        teamSlug,
+                                    )}
+                                >
+                                    Batal
+                                </Link>
+                            </Button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </>
     );

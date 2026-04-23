@@ -7,6 +7,7 @@ import {
     CalendarDays,
     ClipboardCheck,
     ClipboardList,
+    FileSpreadsheet,
     FileText,
     FolderGit2,
     FolderOpen,
@@ -16,12 +17,16 @@ import {
     LayoutGrid,
     Newspaper,
     School,
+    Tag,
     UserCheck,
     Users,
 } from 'lucide-react';
 import AcademicYearController from '@/actions/App/Http/Controllers/Academic/AcademicYearController';
+import AssessmentCategoryController from '@/actions/App/Http/Controllers/Academic/AssessmentCategoryController';
+import AssessmentController from '@/actions/App/Http/Controllers/Academic/AssessmentController';
 import ClassroomController from '@/actions/App/Http/Controllers/Academic/ClassroomController';
 import GradeController from '@/actions/App/Http/Controllers/Academic/GradeController';
+import ReportCardController from '@/actions/App/Http/Controllers/Academic/ReportCardController';
 import SubjectController from '@/actions/App/Http/Controllers/Academic/SubjectController';
 import TeacherAssignmentController from '@/actions/App/Http/Controllers/Academic/TeacherAssignmentController';
 import GalleryController from '@/actions/App/Http/Controllers/CMS/GalleryController';
@@ -136,6 +141,32 @@ export function AppSidebar() {
         },
     ];
 
+    const penilaianNavGroups: NavGroup[] = [
+        {
+            title: 'Penilaian',
+            icon: FileSpreadsheet,
+            items: [
+                {
+                    title: 'Kategori Penilaian',
+                    href: slug
+                        ? AssessmentCategoryController.index.url(slug)
+                        : '/',
+                    icon: Tag,
+                },
+                {
+                    title: 'Daftar Penilaian',
+                    href: slug ? AssessmentController.index.url(slug) : '/',
+                    icon: ClipboardCheck,
+                },
+                {
+                    title: 'Rapor',
+                    href: slug ? ReportCardController.index.url(slug) : '/',
+                    icon: FileSpreadsheet,
+                },
+            ],
+        },
+    ];
+
     const cmsNavGroups: NavGroup[] = [
         {
             title: 'Manajemen Konten',
@@ -194,13 +225,11 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={mainNavItems} />
-                <NavMain items={schoolNavItems} label="Sekolah" />
-                <NavGroups groups={cmsNavGroups} label="Konten" />
-                <NavGroups groups={academicNavGroups} label="Akademik" />
-                <NavGroups
-                    groups={scheduleNavGroups}
-                    label="Jadwal & Absensi"
-                />
+                <NavMain items={schoolNavItems} />
+                <NavGroups groups={cmsNavGroups} />
+                <NavGroups groups={academicNavGroups} />
+                <NavGroups groups={scheduleNavGroups} />
+                <NavGroups groups={penilaianNavGroups} />
             </SidebarContent>
 
             <SidebarFooter>
