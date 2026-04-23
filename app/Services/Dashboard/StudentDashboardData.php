@@ -41,7 +41,7 @@ class StudentDashboardData
                     fn ($q) => $q->where('academic_year_id', $activeYear->id)
                         ->where('team_id', $team->id)
                 )
-                ->with(['classroom.grade'])
+                ->with(['classroom:id,name,grade_id', 'classroom.grade:id,name'])
                 ->first();
 
             if ($enrollment) {
@@ -88,7 +88,7 @@ class StudentDashboardData
                     fn ($q) => $q->where('semester_id', $activeSemester->id)
                         ->where('team_id', $team->id)
                 )
-                ->with(['assessment.subject:id,name'])
+                ->with(['assessment:id,title,max_score,subject_id', 'assessment.subject:id,name'])
                 ->latest()
                 ->take(5)
                 ->get()

@@ -183,12 +183,14 @@ it('returns student dashboard data', function () {
             ->where('hasSchoolTeam', true)
             ->where('role', 'student')
             ->has('data.classroom')
+            ->has('data.classroom.id')
             ->where('data.classroom.name', $classroom->name)
+            ->where('data.classroom.grade', $grade->name)
             ->has('data.schedule_today', 0)
             ->has('data.recent_scores', 0)
-            ->has('data.attendance_summary.hadir')
-            ->has('data.attendance_summary.sakit')
-            ->has('data.attendance_summary.izin')
-            ->has('data.attendance_summary.alpa')
+            ->where('data.attendance_summary.hadir', 0)
+            ->where('data.attendance_summary.sakit', 0)
+            ->where('data.attendance_summary.izin', 0)
+            ->where('data.attendance_summary.alpa', 0)
         );
 });
